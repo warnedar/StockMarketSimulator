@@ -16,11 +16,14 @@ def parse_config_file(config_path):
     Returns: (years, stepsize, approaches)
       where approaches = [(approach_name, {ticker: {
           "strategy": strategy_func,
-          "spread": spread_value (as a percentage)
+          "spread": spread_value (as a percentage),
+          "expense_ratio": optional yearly expense ratio (%)
       } }), ...]
 
-    Note: The optional 'spread' parameter is now interpreted as a percentage.
-          For example, spread=1 means a 1% bid/ask spread.
+    Note: The optional 'spread' parameter is interpreted as a percentage.
+          For example, spread=1 means a 1% bid/ask spread.  Another optional
+          parameter is 'expense_ratio', representing an annual management fee
+          percentage that will be deducted daily from the portfolio.
     """
     years = None
     stepsize = None
@@ -75,20 +78,27 @@ def parse_config_file(config_path):
                     print(f"Warning: unknown strategy '{strategy_str}' => {line_strip}")
                     continue
 
-                # New: Check for an optional spread parameter (interpreted as a percentage)
-                spread_val = 0.0  # default spread is 0%
+                # Optional parameters for this ticker line
+                spread_val = 0.0      # bid/ask spread percent
+                expense_ratio_val = 0.0  # yearly expense ratio percent
                 for sp in parts[1:]:
-                    if sp.lower().startswith("spread="):
+                    low = sp.lower()
+                    if low.startswith("spread="):
                         try:
                             spread_val = float(sp[len("spread="):].strip())
                         except ValueError:
                             print(f"Warning: invalid spread value in line => {line_strip}")
-                        break
+                    elif low.startswith("expense_ratio="):
+                        try:
+                            expense_ratio_val = float(sp[len("expense_ratio="):].strip())
+                        except ValueError:
+                            print(f"Warning: invalid expense_ratio in line => {line_strip}")
 
-                # Map the ticker to a dict with keys "strategy" and "spread".
+                # Map the ticker to a dict with strategy, spread, and expense_ratio
                 current_ticker_dict[ticker_str] = {
                     "strategy": STRATEGY_MAP[strategy_str],
-                    "spread": spread_val
+                    "spread": spread_val,
+                    "expense_ratio": expense_ratio_val,
                 }
 
             # maybe years=5 or stepsize=1
