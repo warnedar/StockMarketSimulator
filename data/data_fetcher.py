@@ -14,12 +14,23 @@ _data_cache = {}
 def _safe_download(ticker: str, start: str) -> pd.DataFrame:
     """Attempt to download price data with a fallback."""
     try:
-        df = yf.download(ticker, start=start, progress=False, show_errors=False)
+        df = yf.download(
+            ticker,
+            start=start,
+            progress=False,
+            show_errors=False,
+            auto_adjust=False,
+        )
     except TypeError as te:
         # Older versions of yfinance do not support the show_errors argument
         if "show_errors" in str(te):
             try:
-                df = yf.download(ticker, start=start, progress=False)
+                df = yf.download(
+                    ticker,
+                    start=start,
+                    progress=False,
+                    auto_adjust=False,
+                )
             except Exception as e:
                 print(f"[WARNING] yf.download failed for {ticker}: {e}")
                 df = pd.DataFrame()
@@ -32,7 +43,7 @@ def _safe_download(ticker: str, start: str) -> pd.DataFrame:
 
     if df.empty:
         try:
-            df = yf.Ticker(ticker).history(start=start)
+            df = yf.Ticker(ticker).history(start=start, auto_adjust=False)
         except Exception as e:
             print(f"[ERROR] history() failed for {ticker}: {e}")
             df = pd.DataFrame()
