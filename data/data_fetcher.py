@@ -117,47 +117,48 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
                     index_col="Date",
                 )
 
-        # Ensure index from CSV is timezone naive
-        if getattr(df.index, "tz", None) is not None:
-            df.index = df.index.tz_localize(None)
+            # Ensure index from CSV is timezone naive
+            if getattr(df.index, "tz", None) is not None:
+                df.index = df.index.tz_localize(None)
 
-        df.dropna(subset=["Close"], inplace=True)
-        df.sort_index(inplace=True)
+            df.dropna(subset=["Close"], inplace=True)
+            df.sort_index(inplace=True)
 
-        # If CSV is empty, re-download data.
-        if df.empty:
-            print(f"[WARNING] CSV for {ticker} is empty. Downloading fresh data from Yahoo Finance.")
-            df = _safe_download(ticker, start_date)
-            if not df.empty:
-                df.to_csv(local_csv_path)
-                df = df[['Close']].copy()
-                df.dropna(inplace=True)
-                df.sort_index(inplace=True)
-
-        # If not empty, check for new data.
-        if not df.empty:
-            last_date = df.index[-1]
-            new_start_date = (last_date + pd.Timedelta(days=1)).strftime('%Y-%m-%d')
-            today_str = datetime.today().strftime('%Y-%m-%d')
-            if new_start_date < today_str:
-                print(f"[UPDATE] Checking for new data for {ticker} from {new_start_date} to {today_str}")
-                new_df = _safe_download(ticker, new_start_date)
-                if not new_df.empty:
-                    new_df = new_df[['Close']].copy()
-                    new_df.dropna(inplace=True)
-                    new_df.sort_index(inplace=True)
-                    df = pd.concat([df, new_df])
-                    df = df[~df.index.duplicated(keep='last')]
-                    df.sort_index(inplace=True)
+            # If CSV is empty, re-download data.
+            if df.empty:
+                print(f"[WARNING] CSV for {ticker} is empty. Downloading fresh data from Yahoo Finance.")
+                df = _safe_download(ticker, start_date)
+                if not df.empty:
                     df.to_csv(local_csv_path)
-                    print(f"[UPDATE] CSV for {ticker} updated with new data.")
-                else:
-                    print(f"[UPDATE] No new data available for {ticker} after {last_date.date()}.")
+                    df = df[["Close"]].copy()
+                    df.dropna(inplace=True)
+                    df.sort_index(inplace=True)
+
+            # If not empty, check for new data.
+            if not df.empty:
+                last_date = df.index[-1]
+                new_start_date = (last_date + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+                today_str = datetime.today().strftime("%Y-%m-%d")
+                if new_start_date < today_str:
+                    print(f"[UPDATE] Checking for new data for {ticker} from {new_start_date} to {today_str}")
+                    new_df = _safe_download(ticker, new_start_date)
+                    if not new_df.empty:
+                        new_df = new_df[["Close"]].copy()
+                        new_df.dropna(inplace=True)
+                        new_df.sort_index(inplace=True)
+                        df = pd.concat([df, new_df])
+                        df = df[~df.index.duplicated(keep='last')]
+                        df.sort_index(inplace=True)
+                        df.to_csv(local_csv_path)
+                        print(f"[UPDATE] CSV for {ticker} updated with new data.")
+                    else:
+                        print(f"[UPDATE] No new data available for {ticker} after {last_date.date()}.")
         else:
             print(f"[YAHOO] Downloading {ticker} from {start_date}")
             df = _safe_download(ticker, start_date)
             if not df.empty:
                 df.to_csv(local_csv_path)
+
 
     if df is None or df.empty:
         raise ValueError(f"No data found for ticker: {ticker}")
