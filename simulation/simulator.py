@@ -21,6 +21,8 @@ class HybridMultiFundPortfolio:
             pf = Portfolio(sub_cash)
             # Set the fixed bid/ask spread for this ticker.
             pf.spread = ticker_info_dict[tkSym].get("spread", 0.0)
+            # Optional yearly expense ratio percentage.
+            pf.expense_ratio = ticker_info_dict[tkSym].get("expense_ratio", 0.0)
             # If strategy is advanced_daytrading, attach advanced parameters (if provided) to the portfolio.
             if ticker_info_dict[tkSym]["strategy"].__name__ == "advanced_daytrading":
                 advanced_params = {}
@@ -70,6 +72,9 @@ def run_hybrid_multi_fund(dfs_dict, hybrid_pf: HybridMultiFundPortfolio):
             execute_orders(cur_price, pf, day_i)
             strategy_func = hybrid_pf.strategies_for_tickers[sym]
             strategy_func(pf, dt, cur_price, day_i)
+            # Deduct daily expense ratio fee
+            daily_fee = pf.total_value(cur_price) * (pf.expense_ratio / 100.0) / 365.0
+            pf.cash -= daily_fee
 
         tv = hybrid_pf.total_value(day_prices)
         pct = ((tv - hybrid_pf.initial_cash) / hybrid_pf.initial_cash) * 100

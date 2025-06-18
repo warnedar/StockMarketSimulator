@@ -35,6 +35,10 @@ strategies.  Example:
 python -m stock_market_simulator.main config/configA.txt my_report
 ```
 
+Each `ticker=` line can optionally include `spread` (bid/ask percentage) and
+`expense_ratio` (annual fee percentage).  The expense ratio is deducted daily
+during simulation.
+
 Results are written to `reports/my_report/` including plots and a `report.txt`
 with detailed statistics.
 
