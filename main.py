@@ -3,6 +3,7 @@
 import os
 import sys
 import shutil
+import concurrent.futures
 import matplotlib.pyplot as plt
 from io import StringIO
 from collections import defaultdict
@@ -87,11 +88,14 @@ def generate_boxplots(approach_data, output_dir, out_name):
 
 def main():
     if len(sys.argv) < 3:
-        print("Usage: python -m stock_market_simulator.main <config_file> <output_dir_name>")
+        print(
+            "Usage: python -m stock_market_simulator.main <config_file> <output_dir_name> [workers]"
+        )
         return
 
     config_path = sys.argv[1]
     out_name = sys.argv[2]
+    workers = int(sys.argv[3]) if len(sys.argv) >= 4 else (os.cpu_count() or 1)
 
     base_dir = "reports"
     out_dir = os.path.join(base_dir, out_name)
@@ -108,50 +112,60 @@ def main():
         years, stepsize, approaches = parse_config_file(config_path)
         approach_data = {}
 
-        for approach_name, ticker_strat_dict in approaches:
-            needed_tickers = set(ticker_strat_dict.keys())
-            all_dfs = {}
-            for tkSym in needed_tickers:
-                df = load_historical_data(tkSym)
-                all_dfs[tkSym] = df
+        def run_approach(aname, ticker_strat_dict):
+            needed = set(ticker_strat_dict.keys())
+            all_dfs = {tk: load_historical_data(tk) for tk in needed}
+            return run_configured_sweep(all_dfs, aname, ticker_strat_dict, years, stepsize, 10000.0)
 
-            try:
-                summary, runs_list, final_map = run_configured_sweep(
-                    all_dfs, approach_name, ticker_strat_dict, years, stepsize, 10000.0
-                )
-            except ValueError as e:
-                myprint(f"Approach {approach_name} => ERROR: {e}")
+        max_workers = min(workers, len(approaches)) if approaches else 1
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            future_map = {executor.submit(run_approach, aname, tdict): aname for aname, tdict in approaches}
+            for fut in concurrent.futures.as_completed(future_map):
+                aname = future_map[fut]
+                try:
+                    summary, runs_list, final_map = fut.result()
+                    approach_data[aname] = (summary, runs_list, final_map)
+                except Exception as e:
+                    myprint(f"Approach {aname} => ERROR: {e}")
+
+        for aname, _ in approaches:
+            if aname not in approach_data:
                 continue
+            summary, runs_list, _ = approach_data[aname]
 
-            approach_data[approach_name] = (summary, runs_list, final_map)
-
-            # Print existing metrics
-            myprint(f"=== Approach: {approach_name} ===")
+            myprint(f"=== Approach: {aname} ===")
 
             lv = summary["lowest_valley"]
-            myprint(f"lowest_valley => "
-                    f"min:{lv['min_val']:.2f} (start {lv['min_start_date'].date()}), "
-                    f"max:{lv['max_val']:.2f} (start {lv['max_start_date'].date()}), "
-                    f"avg:{lv['avg_val']:.2f}")
+            myprint(
+                f"lowest_valley => "
+                f"min:{lv['min_val']:.2f} (start {lv['min_start_date'].date()}), "
+                f"max:{lv['max_val']:.2f} (start {lv['max_start_date'].date()}), "
+                f"avg:{lv['avg_val']:.2f}"
+            )
 
             hv = summary["highest_peak"]
-            myprint(f"highest_peak  => "
-                    f"min:{hv['min_val']:.2f} (start {hv['min_start_date'].date()}), "
-                    f"max:{hv['max_val']:.2f} (start {hv['max_start_date'].date()}), "
-                    f"avg:{hv['avg_val']:.2f}")
+            myprint(
+                f"highest_peak  => "
+                f"min:{hv['min_val']:.2f} (start {hv['min_start_date'].date()}), "
+                f"max:{hv['max_val']:.2f} (start {hv['max_start_date'].date()}), "
+                f"avg:{hv['avg_val']:.2f}"
+            )
 
             fr = summary["final_result"]
-            myprint(f"final_result  => "
-                    f"min:{fr['min_val']:.2f} (start {fr['min_start_date'].date()}), "
-                    f"max:{fr['max_val']:.2f} (start {fr['max_start_date'].date()}), "
-                    f"avg:{fr['avg_val']:.2f}")
+            myprint(
+                f"final_result  => "
+                f"min:{fr['min_val']:.2f} (start {fr['min_start_date'].date()}), "
+                f"max:{fr['max_val']:.2f} (start {fr['max_start_date'].date()}), "
+                f"avg:{fr['avg_val']:.2f}"
+            )
 
-            # NEW: Print the average_annual_return summary
             aar = summary["avg_annual_return"]
-            myprint(f"avg_annual_return => "
-                    f"min:{aar['min_val']:.2f}% (start {aar['min_start_date'].date()}), "
-                    f"max:{aar['max_val']:.2f}% (start {aar['max_start_date'].date()}), "
-                    f"avg:{aar['avg_val']:.2f}%\n")
+            myprint(
+                f"avg_annual_return => "
+                f"min:{aar['min_val']:.2f}% (start {aar['min_start_date'].date()}), "
+                f"max:{aar['max_val']:.2f}% (start {aar['max_start_date'].date()}), "
+                f"avg:{aar['avg_val']:.2f}%\n"
+            )
 
         # If no successful approaches, skip everything else
         if not approach_data:

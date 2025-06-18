@@ -2,6 +2,8 @@
 
 import subprocess
 import sys
+import os
+import concurrent.futures
 
 def main():
     """
@@ -22,10 +24,18 @@ def main():
         # Add more configs here if desired
     ]
 
-    for config_file, out_dir in runs:
-        print(f"\n=== Running simulation for config '{config_file}' => '{out_dir}' ===")
-        cmd = [sys.executable, "-m", "stock_market_simulator.main", config_file, out_dir]
+    max_workers = int(sys.argv[1]) if len(sys.argv) >= 2 else (os.cpu_count() or 1)
+    per_job = max(1, max_workers // len(runs))
+
+    def run_pair(cfg, out):
+        print(f"\n=== Running simulation for config '{cfg}' => '{out}' ===")
+        cmd = [sys.executable, "-m", "stock_market_simulator.main", cfg, out, str(per_job)]
         subprocess.run(cmd, check=True)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(runs)) as executor:
+        futures = [executor.submit(run_pair, c, o) for c, o in runs]
+        for fut in concurrent.futures.as_completed(futures):
+            fut.result()
 
     print("\nAll simulations completed successfully.")
 
