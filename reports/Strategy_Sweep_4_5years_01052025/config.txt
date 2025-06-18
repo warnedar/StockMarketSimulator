@@ -1,0 +1,21 @@
+# This config file sets up a 15-year investment window
+years=5
+
+# We'll do a 1-month step for our sweeps
+stepsize=1
+
+approach=S&P500_buyhold
+    ticker=^GSPC, strategy=buy_hold
+
+approach=DaveRamsey_Blend
+    ticker=^GSPC, strategy=buy_hold
+    ticker=^IXIC, strategy=buy_hold
+    ticker=^RUT, strategy=buy_hold
+    ticker=^MID, strategy=buy_hold
+
+approach=NASDAQ_Daytrade
+    ticker=^IXIC, strategy=advanced_daytrading
+
+approach=Daryl_Cocktail
+    ticker=^IXIC, strategy=advanced_daytrading
+    ticker=^MID, strategy=buy_hold

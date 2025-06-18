@@ -1,0 +1,37 @@
+=== Approach: S&P500_buyhold ===
+lowest_valley => min:-56.26 (start 2007-10-01), max:-0.00 (start 2009-09-01), avg:-20.79
+highest_peak  => min:39.74 (start 1998-04-01), max:798.00 (start 1984-08-01), avg:310.80
+final_result  => min:31.92 (start 2000-10-02), max:789.25 (start 1985-01-02), avg:261.38
+avg_annual_return => min:1.86% (start 2000-10-02), max:15.68% (start 1985-01-02), avg:8.07%
+
+=== Approach: S&P500_SMA_Trading ===
+lowest_valley => min:-56.05 (start 2007-08-01), max:-0.00 (start 1995-11-01), avg:-20.69
+highest_peak  => min:30.85 (start 1999-04-01), max:757.87 (start 1984-09-04), avg:297.06
+final_result  => min:24.46 (start 1998-01-02), max:724.99 (start 1984-05-01), avg:247.91
+avg_annual_return => min:1.47% (start 1998-01-02), max:15.11% (start 1984-05-01), avg:7.79%
+
+=== Approach: S&P500_adv_daytrading ===
+lowest_valley => min:-39.82 (start 2007-10-01), max:-0.00 (start 2009-11-02), avg:-12.61
+highest_peak  => min:110.10 (start 1997-08-01), max:795.24 (start 2009-03-02), avg:335.42
+final_result  => min:105.21 (start 1997-08-01), max:776.90 (start 2009-03-02), avg:304.86
+avg_annual_return => min:4.91% (start 1997-08-01), max:15.57% (start 2009-03-02), avg:9.39%
+
+=== Approach: NASDAQ_buyhold ===
+lowest_valley => min:-76.57 (start 2000-03-01), max:-0.00 (start 2009-09-01), avg:-23.26
+highest_peak  => min:6.19 (start 2000-03-01), max:1709.53 (start 1985-05-01), avg:637.36
+final_result  => min:4.47 (start 2000-03-01), max:1672.80 (start 1985-04-01), avg:386.44
+avg_annual_return => min:0.29% (start 2000-03-01), max:21.13% (start 1985-04-01), avg:10.10%
+
+=== Approach: NASDAQ_SMA_Trading ===
+lowest_valley => min:-75.46 (start 2000-01-03), max:-0.00 (start 2009-05-01), avg:-22.84
+highest_peak  => min:4.29 (start 2000-01-03), max:1563.10 (start 1985-04-01), avg:588.26
+final_result  => min:1.27 (start 2000-01-03), max:1533.44 (start 1985-04-01), avg:356.44
+avg_annual_return => min:0.08% (start 2000-01-03), max:20.47% (start 1985-04-01), avg:9.68%
+
+=== Approach: NASDAQ_adv_daytrading ===
+lowest_valley => min:-47.96 (start 2001-02-01), max:-0.00 (start 2009-09-01), avg:-12.96
+highest_peak  => min:187.34 (start 2001-02-01), max:1688.56 (start 1985-10-01), avg:615.28
+final_result  => min:141.24 (start 2001-02-01), max:1429.31 (start 1985-09-03), avg:521.55
+avg_annual_return => min:6.05% (start 2001-02-01), max:19.94% (start 1985-09-03), avg:12.39%
+
+Histogram saved to reports\Strategy_Sweep_6_15years_02092025\histogram.png

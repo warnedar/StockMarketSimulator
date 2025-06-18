@@ -1,0 +1,7 @@
+=== Approach: S&P500_buyhold ===
+lowest_valley => min:-56.26 (start 2007-10-01), max:0.00 (start 1982-09-01), avg:-20.79
+highest_peak  => min:39.74 (start 1998-04-01), max:798.02 (start 1984-08-01), avg:310.80
+final_result  => min:31.92 (start 2000-10-02), max:789.26 (start 1985-01-02), avg:261.39
+
+Number of runs: 361
+

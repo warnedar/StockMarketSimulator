@@ -1,0 +1,37 @@
+=== Approach: S&P500_buyhold ===
+lowest_valley => min:-56.26 (start 2007-10-01), max:-0.00 (start 2013-09-03), avg:-18.08
+highest_peak  => min:3.85 (start 2000-09-01), max:389.80 (start 1990-11-01), avg:172.01
+final_result  => min:-38.24 (start 1999-04-01), max:367.85 (start 1990-09-04), avg:144.67
+avg_annual_return => min:-4.70% (start 1999-04-01), max:16.68% (start 1990-09-04), avg:8.54%
+
+=== Approach: S&P500_SMA_Trading ===
+lowest_valley => min:-56.05 (start 2007-08-01), max:-0.00 (start 2012-11-01), avg:-18.00
+highest_peak  => min:3.92 (start 1999-12-01), max:380.04 (start 1990-06-01), avg:163.77
+final_result  => min:-43.16 (start 1999-03-01), max:376.96 (start 1990-09-04), avg:136.70
+avg_annual_return => min:-5.49% (start 1999-03-01), max:16.91% (start 1990-09-04), avg:8.17%
+
+=== Approach: S&P500_adv_daytrading ===
+lowest_valley => min:-39.82 (start 2007-10-01), max:-0.00 (start 2013-09-03), avg:-11.56
+highest_peak  => min:38.98 (start 1999-07-01), max:352.88 (start 2011-10-03), avg:182.21
+final_result  => min:0.11 (start 1999-02-01), max:335.17 (start 2011-10-03), avg:165.45
+avg_annual_return => min:0.01% (start 1999-02-01), max:15.84% (start 2011-10-03), avg:9.87%
+
+=== Approach: NASDAQ_buyhold ===
+lowest_valley => min:-76.57 (start 2000-03-01), max:-0.00 (start 2013-09-03), avg:-20.81
+highest_peak  => min:0.00 (start 2000-09-01), max:1400.32 (start 1990-11-01), avg:322.11
+final_result  => min:-52.92 (start 2000-03-01), max:999.98 (start 1990-09-04), avg:208.38
+avg_annual_return => min:-7.26% (start 2000-03-01), max:27.10% (start 1990-09-04), avg:10.55%
+
+=== Approach: NASDAQ_SMA_Trading ===
+lowest_valley => min:-75.46 (start 2000-01-03), max:-0.00 (start 2009-05-01), avg:-20.51
+highest_peak  => min:0.68 (start 2000-07-03), max:1228.31 (start 1990-06-01), avg:297.29
+final_result  => min:-52.81 (start 1999-12-01), max:1006.70 (start 1990-09-04), avg:193.49
+avg_annual_return => min:-7.23% (start 1999-12-01), max:27.18% (start 1990-09-04), avg:10.02%
+
+=== Approach: NASDAQ_adv_daytrading ===
+lowest_valley => min:-47.96 (start 2001-02-01), max:-0.00 (start 2013-09-03), avg:-12.06
+highest_peak  => min:71.49 (start 2000-03-01), max:1026.84 (start 1990-11-01), avg:282.50
+final_result  => min:42.37 (start 1999-02-01), max:808.81 (start 1990-11-01), avg:234.75
+avg_annual_return => min:3.60% (start 1999-02-01), max:24.69% (start 1990-11-01), avg:12.17%
+
+Histogram saved to reports\Strategy_Sweep_6_10years_02092025\histogram.png

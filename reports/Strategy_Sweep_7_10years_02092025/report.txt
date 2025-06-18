@@ -1,0 +1,61 @@
+=== Approach: S&P500_buyhold ===
+lowest_valley => min:-56.27 (start 2007-10-01), max:-0.02 (start 1983-02-01), avg:-18.10
+highest_peak  => min:3.83 (start 2000-09-01), max:389.68 (start 1990-11-01), avg:171.94
+final_result  => min:-38.25 (start 1999-04-01), max:367.74 (start 1990-09-04), avg:144.62
+avg_annual_return => min:-4.71% (start 1999-04-01), max:16.68% (start 1990-09-04), avg:8.54%
+
+=== Approach: S&P500_SMA_Trading ===
+lowest_valley => min:-56.06 (start 2007-08-01), max:-0.00 (start 1985-09-03), avg:-18.02
+highest_peak  => min:3.89 (start 1999-12-01), max:379.92 (start 1990-06-01), avg:163.68
+final_result  => min:-43.17 (start 1999-03-01), max:376.85 (start 1990-09-04), avg:136.61
+avg_annual_return => min:-5.49% (start 1999-03-01), max:16.91% (start 1990-09-04), avg:8.17%
+
+=== Approach: S&P500_adv_daytrading ===
+lowest_valley => min:-40.10 (start 2007-10-01), max:-0.02 (start 1980-01-02), avg:-11.69
+highest_peak  => min:38.26 (start 1999-07-01), max:351.42 (start 2011-10-03), avg:181.17
+final_result  => min:-0.77 (start 1999-02-01), max:333.76 (start 2011-10-03), avg:164.34
+avg_annual_return => min:-0.08% (start 1999-02-01), max:15.80% (start 2011-10-03), avg:9.82%
+
+=== Approach: S&P500_RSI ===
+lowest_valley => min:-11.48 (start 2008-03-03), max:-0.01 (start 2002-07-01), avg:-1.73
+highest_peak  => min:1.14 (start 1987-04-01), max:17.50 (start 2011-11-01), avg:9.34
+final_result  => min:-0.83 (start 1986-08-01), max:17.50 (start 2011-11-01), avg:7.69
+avg_annual_return => min:-0.08% (start 1986-08-01), max:1.63% (start 2011-11-01), avg:0.74%
+
+=== Approach: S&P500_Momentum_Breakout ===
+lowest_valley => min:0.00 (start 1980-01-02), max:0.00 (start 1980-01-02), avg:0.00
+highest_peak  => min:0.00 (start 1980-01-02), max:0.00 (start 1980-01-02), avg:0.00
+final_result  => min:0.00 (start 1980-01-02), max:0.00 (start 1980-01-02), avg:0.00
+avg_annual_return => min:0.00% (start 1980-01-02), max:0.00% (start 1980-01-02), avg:0.00%
+
+=== Approach: NASDAQ_buyhold ===
+lowest_valley => min:-76.57 (start 2000-03-01), max:-0.02 (start 1980-05-01), avg:-20.83
+highest_peak  => min:0.00 (start 2000-09-01), max:1399.96 (start 1990-11-01), avg:322.00
+final_result  => min:-52.94 (start 2000-03-01), max:999.71 (start 1990-09-04), avg:208.30
+avg_annual_return => min:-7.26% (start 2000-03-01), max:27.09% (start 1990-09-04), avg:10.55%
+
+=== Approach: NASDAQ_SMA_Trading ===
+lowest_valley => min:-75.48 (start 2000-01-03), max:-0.00 (start 1982-04-01), avg:-20.54
+highest_peak  => min:0.66 (start 2000-07-03), max:1226.81 (start 1990-06-01), avg:297.02
+final_result  => min:-52.88 (start 1999-12-01), max:1005.45 (start 1990-09-04), avg:193.24
+avg_annual_return => min:-7.25% (start 1999-12-01), max:27.16% (start 1990-09-04), avg:10.01%
+
+=== Approach: NASDAQ_adv_daytrading ===
+lowest_valley => min:-48.12 (start 2001-02-01), max:-0.02 (start 1980-05-01), avg:-12.18
+highest_peak  => min:68.74 (start 2000-03-01), max:1018.76 (start 1990-11-01), avg:279.57
+final_result  => min:39.98 (start 1999-02-01), max:801.40 (start 1990-11-01), avg:231.77
+avg_annual_return => min:3.42% (start 1999-02-01), max:24.59% (start 1990-11-01), avg:12.07%
+
+=== Approach: NASDAQ_RSI ===
+lowest_valley => min:-17.85 (start 2000-08-01), max:-0.01 (start 2008-10-01), avg:-6.62
+highest_peak  => min:0.00 (start 1980-01-02), max:19.02 (start 2008-11-03), avg:5.83
+final_result  => min:-14.98 (start 2000-09-01), max:18.41 (start 2008-10-01), avg:0.04
+avg_annual_return => min:-1.61% (start 2000-09-01), max:1.70% (start 2008-10-01), avg:-0.02%
+
+=== Approach: NASDAQ_Momentum_Breakout ===
+lowest_valley => min:0.00 (start 1980-01-02), max:0.00 (start 1980-01-02), avg:0.00
+highest_peak  => min:0.00 (start 1980-01-02), max:0.00 (start 1980-01-02), avg:0.00
+final_result  => min:0.00 (start 1980-01-02), max:0.00 (start 1980-01-02), avg:0.00
+avg_annual_return => min:0.00% (start 1980-01-02), max:0.00% (start 1980-01-02), avg:0.00%
+
+Histogram saved to reports\Strategy_Sweep_7_10years_02092025\histogram.png

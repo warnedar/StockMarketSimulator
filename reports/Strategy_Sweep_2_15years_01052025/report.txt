@@ -1,0 +1,57 @@
+=== Approach: GSPC_buyhold ===
+lowest_valley => min:-56.26 (start 2007-10-01), max:0.00 (start 1982-09-01), avg:-20.79
+highest_peak  => min:39.74 (start 1998-04-01), max:798.02 (start 1984-08-01), avg:310.80
+final_result  => min:31.92 (start 2000-10-02), max:789.26 (start 1985-01-02), avg:261.39
+
+Number of runs: 361
+
+=== Approach: IXIC_buyhold ===
+lowest_valley => min:-76.57 (start 2000-03-01), max:0.00 (start 1980-05-01), avg:-23.26
+highest_peak  => min:6.19 (start 2000-03-01), max:1709.54 (start 1985-05-01), avg:637.37
+final_result  => min:4.47 (start 2000-03-01), max:1672.81 (start 1985-04-01), avg:386.45
+
+Number of runs: 361
+
+=== Approach: IXIC_adv30 ===
+lowest_valley => min:-47.95 (start 2001-02-01), max:0.00 (start 1980-05-01), avg:-12.95
+highest_peak  => min:187.36 (start 2001-02-01), max:1688.81 (start 1985-10-01), avg:615.36
+final_result  => min:141.26 (start 2001-02-01), max:1429.52 (start 1985-09-03), avg:521.63
+
+Number of runs: 361
+
+=== Approach: IXIC_adv20 ===
+lowest_valley => min:-67.77 (start 2000-09-01), max:0.00 (start 1980-05-01), avg:-16.59
+highest_peak  => min:40.74 (start 2000-09-01), max:1600.04 (start 1985-10-01), avg:554.17
+final_result  => min:22.06 (start 2000-09-01), max:1367.82 (start 1985-09-03), avg:382.23
+
+Number of runs: 361
+
+=== Approach: IXIC_adv10 ===
+lowest_valley => min:-73.04 (start 2000-09-01), max:0.00 (start 1980-05-01), avg:-17.07
+highest_peak  => min:32.99 (start 2000-09-01), max:1766.67 (start 1985-10-01), avg:649.17
+final_result  => min:15.34 (start 2000-09-01), max:1611.93 (start 1985-09-03), avg:427.26
+
+Number of runs: 361
+
+=== Approach: GSPC_adv30 ===
+lowest_valley => min:-39.81 (start 2007-10-01), max:0.00 (start 1980-01-02), avg:-12.61
+highest_peak  => min:110.13 (start 1997-08-01), max:795.27 (start 2009-03-02), avg:335.46
+final_result  => min:105.23 (start 1997-08-01), max:776.93 (start 2009-03-02), avg:304.90
+
+Number of runs: 361
+
+=== Approach: GSPC_adv20 ===
+lowest_valley => min:-43.83 (start 2007-10-01), max:0.00 (start 1980-01-02), avg:-14.73
+highest_peak  => min:55.89 (start 1997-08-01), max:770.24 (start 1982-08-02), avg:304.32
+final_result  => min:51.74 (start 1997-08-01), max:766.68 (start 1982-08-02), avg:265.31
+
+Number of runs: 361
+
+=== Approach: GSPC_adv10 ===
+lowest_valley => min:-50.14 (start 2007-10-01), max:0.00 (start 1980-01-02), avg:-16.25
+highest_peak  => min:57.76 (start 1998-08-03), max:797.47 (start 1982-08-02), avg:326.32
+final_result  => min:56.81 (start 1998-08-03), max:793.79 (start 1982-08-02), avg:281.93
+
+Number of runs: 361
+
+Histogram saved to reports\Strategy_Sweep_2_15years_01052025\histogram.png
