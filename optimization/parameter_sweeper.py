@@ -2,6 +2,7 @@
 
 import itertools
 import concurrent.futures
+import os
 import numpy as np
 import pandas as pd
 from stock_market_simulator.simulation.simulator import (
@@ -10,6 +11,19 @@ from stock_market_simulator.simulation.simulator import (
     find_monthly_starts_first_open,
     HybridMultiFundPortfolio
 )
+
+# Shared data loaded once per worker. These globals are populated by
+# the process pool initializer to avoid repeatedly sending large
+# DataFrames to every task.
+_DFS_DICT = None
+_TICKER_INFO_DICT = None
+
+
+def _init_worker(dfs_dict, ticker_info_dict):
+    """Initializer for worker processes."""
+    global _DFS_DICT, _TICKER_INFO_DICT
+    _DFS_DICT = dfs_dict
+    _TICKER_INFO_DICT = ticker_info_dict
 
 
 def run_advanced_daytrading_simulation(ticker_info_dict, dfs_dict, start_date, years, initial_cash=10000.0,
@@ -85,14 +99,25 @@ def metric_median(history, years):
 
 
 def candidate_worker(args):
-    """
-    Worker function to run a single candidate simulation.
-    args is a tuple:
-      (ticker_info_dict, dfs_dict, start_date, years, ts_pct, lb_discount, pl_days, initial_cash, metric_selector)
+    """Run a single candidate simulation.
+
+    Args is a tuple:
+      (start_date, years, ts_pct, lb_discount, pl_days, initial_cash, metric_selector)
+    or the legacy form where ticker_info_dict and dfs_dict are provided.
+
     Returns:
       (start_date, years, ts_pct, lb_discount, pl_days, metric_value)
     """
-    (ticker_info_dict, dfs_dict, start_date, years, ts_pct, lb_discount, pl_days, initial_cash, metric_selector) = args
+    global _DFS_DICT, _TICKER_INFO_DICT
+
+    # Backwards compatibility: allow old task tuples that include the data dicts.
+    if len(args) == 9:
+        ticker_info_dict, dfs_dict, start_date, years, ts_pct, lb_discount, pl_days, initial_cash, metric_selector = args
+    else:
+        start_date, years, ts_pct, lb_discount, pl_days, initial_cash, metric_selector = args
+        ticker_info_dict = _TICKER_INFO_DICT
+        dfs_dict = _DFS_DICT
+
     modified_ticker_info = {}
     for ticker, info in ticker_info_dict.items():
         new_info = info.copy()
@@ -145,12 +170,19 @@ def full_parameter_sweep_advanced_daytrading(ticker_info_dict, dfs_dict, candida
             for ts_pct, lb_discount, pl_days in itertools.product(
                     trailing_stop_values, limit_buy_discount_values, pending_limit_days_values
             ):
-                tasks.append((ticker_info_dict, dfs_dict, start_date, years_val, ts_pct, lb_discount, pl_days,
+                tasks.append((start_date, years_val, ts_pct, lb_discount, pl_days,
                               initial_cash, metric_selector))
 
-    # Use ProcessPoolExecutor to run tasks in parallel.
-    with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
-        for result in executor.map(candidate_worker, tasks):
+    # Use ProcessPoolExecutor to run tasks in parallel. The historical data and
+    # ticker info are loaded once per worker via the initializer to avoid
+    # pickling large objects for every task.
+    with concurrent.futures.ProcessPoolExecutor(
+            max_workers=max_workers,
+            initializer=_init_worker,
+            initargs=(dfs_dict, ticker_info_dict)) as executor:
+        n_workers = max_workers or os.cpu_count() or 1
+        chunk_size = max(1, len(tasks) // (n_workers * 4))
+        for result in executor.map(candidate_worker, tasks, chunksize=chunk_size):
             results.append(result)
 
     return results
