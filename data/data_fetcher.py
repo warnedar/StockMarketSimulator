@@ -13,6 +13,17 @@ def _safe_download(ticker: str, start: str) -> pd.DataFrame:
     """Attempt to download price data with a fallback."""
     try:
         df = yf.download(ticker, start=start, progress=False, show_errors=False)
+    except TypeError as te:
+        # Older versions of yfinance do not support the show_errors argument
+        if "show_errors" in str(te):
+            try:
+                df = yf.download(ticker, start=start, progress=False)
+            except Exception as e:
+                print(f"[WARNING] yf.download failed for {ticker}: {e}")
+                df = pd.DataFrame()
+        else:
+            print(f"[WARNING] yf.download failed for {ticker}: {te}")
+            df = pd.DataFrame()
     except Exception as e:
         print(f"[WARNING] yf.download failed for {ticker}: {e}")
         df = pd.DataFrame()
