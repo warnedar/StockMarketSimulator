@@ -85,7 +85,16 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
         # If CSV is empty, re-download data.
         if df.empty:
             print(f"[WARNING] CSV for {ticker} is empty. Downloading fresh data from Yahoo Finance.")
-            df = yf.download(ticker, start=start_date, progress=False)
+            try:
+                df = yf.download(
+                    ticker,
+                    start=start_date,
+                    progress=False,
+                    show_errors=False,
+                )
+            except Exception as e:
+                print(f"[WARNING] Failed to download {ticker}: {e}")
+                df = pd.DataFrame()
             if not df.empty:
                 df.to_csv(local_csv_path)
                 df = df[['Close']].copy()
@@ -99,7 +108,16 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
             today_str = datetime.today().strftime('%Y-%m-%d')
             if new_start_date < today_str:
                 print(f"[UPDATE] Checking for new data for {ticker} from {new_start_date} to {today_str}")
-                new_df = yf.download(ticker, start=new_start_date, progress=False)
+                try:
+                    new_df = yf.download(
+                        ticker,
+                        start=new_start_date,
+                        progress=False,
+                        show_errors=False,
+                    )
+                except Exception as e:
+                    print(f"[WARNING] Failed to download updates for {ticker}: {e}")
+                    new_df = pd.DataFrame()
                 if not new_df.empty:
                     new_df = new_df[['Close']].copy()
                     new_df.dropna(inplace=True)
@@ -113,7 +131,16 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
                     print(f"[UPDATE] No new data available for {ticker} after {last_date.date()}.")
     else:
         print(f"[YAHOO] Downloading {ticker} from {start_date}")
-        df = yf.download(ticker, start=start_date, progress=False)
+        try:
+            df = yf.download(
+                ticker,
+                start=start_date,
+                progress=False,
+                show_errors=False,
+            )
+        except Exception as e:
+            print(f"[WARNING] Failed to download {ticker}: {e}")
+            df = pd.DataFrame()
         if not df.empty:
             df.to_csv(local_csv_path)
 
