@@ -1,9 +1,11 @@
 # stock_market_simulator/data/data_fetcher.py
 
 import os
+from datetime import datetime
+
 import pandas as pd
 import yfinance as yf
-from datetime import datetime
+from filelock import FileLock
 
 # In-memory cache to avoid redundant downloads during a single run
 _data_cache = {}
@@ -69,91 +71,93 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
 
     df = None
 
-    if os.path.exists(local_csv_path):
-        print(f"[LOCAL CSV] Loading {ticker} from {local_csv_path}")
-        # Inspect the first line so we can determine how to read the file.
-        with open(local_csv_path, 'r') as f:
-            first_line = f.readline().strip()
+    lock_path = f"{local_csv_path}.lock"
+    with FileLock(lock_path):
+        if os.path.exists(local_csv_path):
+            print(f"[LOCAL CSV] Loading {ticker} from {local_csv_path}")
+            # Inspect the first line so we can determine how to read the file.
+            with open(local_csv_path, 'r') as f:
+                first_line = f.readline().strip()
 
-        if "Date" in first_line:
-            # Standard CSV with a header row
-            df = pd.read_csv(
-                local_csv_path,
-                parse_dates=["Date"],
-                index_col="Date",
-            )
-        elif first_line.startswith("Price"):
-            # Custom exported format. The first three lines contain
-            # column labels like "Price"/"Ticker"/"Date". Determine how
-            # many actual columns are present so we can construct the
-            # appropriate list of names.
-            column_count = len(first_line.split(','))
-            if column_count >= 6:
-                names = ["Date", "Close", "High", "Low", "Open", "Volume"]
+            if "Date" in first_line:
+                # Standard CSV with a header row
+                df = pd.read_csv(
+                    local_csv_path,
+                    parse_dates=["Date"],
+                    index_col="Date",
+                )
+            elif first_line.startswith("Price"):
+                # Custom exported format. The first three lines contain
+                # column labels like "Price"/"Ticker"/"Date". Determine how
+                # many actual columns are present so we can construct the
+                # appropriate list of names.
+                column_count = len(first_line.split(','))
+                if column_count >= 6:
+                    names = ["Date", "Close", "High", "Low", "Open", "Volume"]
+                else:
+                    # Some files only contain a date and closing price
+                    names = ["Date", "Close"]
+                df = pd.read_csv(
+                    local_csv_path,
+                    skiprows=3,
+                    header=None,
+                    names=names,
+                    usecols=range(len(names)),
+                    parse_dates=["Date"],
+                    index_col="Date",
+                )
             else:
-                # Some files only contain a date and closing price
-                names = ["Date", "Close"]
-            df = pd.read_csv(
-                local_csv_path,
-                skiprows=3,
-                header=None,
-                names=names,
-                usecols=range(len(names)),
-                parse_dates=["Date"],
-                index_col="Date",
-            )
+                # Fallback to the old behaviour of skipping three rows
+                df = pd.read_csv(
+                    local_csv_path,
+                    skiprows=3,
+                    header=None,
+                    names=["Date", "Close", "High", "Low", "Open", "Volume"],
+                    parse_dates=["Date"],
+                    index_col="Date",
+                )
+
+            # Ensure index from CSV is timezone naive
+            if getattr(df.index, "tz", None) is not None:
+                df.index = df.index.tz_localize(None)
+
+            df.dropna(subset=["Close"], inplace=True)
+            df.sort_index(inplace=True)
+
+            # If CSV is empty, re-download data.
+            if df.empty:
+                print(f"[WARNING] CSV for {ticker} is empty. Downloading fresh data from Yahoo Finance.")
+                df = _safe_download(ticker, start_date)
+                if not df.empty:
+                    df.to_csv(local_csv_path)
+                    df = df[["Close"]].copy()
+                    df.dropna(inplace=True)
+                    df.sort_index(inplace=True)
+
+            # If not empty, check for new data.
+            if not df.empty:
+                last_date = df.index[-1]
+                new_start_date = (last_date + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+                today_str = datetime.today().strftime("%Y-%m-%d")
+                if new_start_date < today_str:
+                    print(f"[UPDATE] Checking for new data for {ticker} from {new_start_date} to {today_str}")
+                    new_df = _safe_download(ticker, new_start_date)
+                    if not new_df.empty:
+                        new_df = new_df[["Close"]].copy()
+                        new_df.dropna(inplace=True)
+                        new_df.sort_index(inplace=True)
+                        df = pd.concat([df, new_df])
+                        df = df[~df.index.duplicated(keep='last')]
+                        df.sort_index(inplace=True)
+                        df.to_csv(local_csv_path)
+                        print(f"[UPDATE] CSV for {ticker} updated with new data.")
+                    else:
+                        print(f"[UPDATE] No new data available for {ticker} after {last_date.date()}.")
         else:
-            # Fallback to the old behaviour of skipping three rows
-            df = pd.read_csv(
-                local_csv_path,
-                skiprows=3,
-                header=None,
-                names=["Date", "Close", "High", "Low", "Open", "Volume"],
-                parse_dates=["Date"],
-                index_col="Date",
-            )
-
-        # Ensure index from CSV is timezone naive
-        if getattr(df.index, "tz", None) is not None:
-            df.index = df.index.tz_localize(None)
-
-        df.dropna(subset=["Close"], inplace=True)
-        df.sort_index(inplace=True)
-
-        # If CSV is empty, re-download data.
-        if df.empty:
-            print(f"[WARNING] CSV for {ticker} is empty. Downloading fresh data from Yahoo Finance.")
+            print(f"[YAHOO] Downloading {ticker} from {start_date}")
             df = _safe_download(ticker, start_date)
             if not df.empty:
                 df.to_csv(local_csv_path)
-                df = df[['Close']].copy()
-                df.dropna(inplace=True)
-                df.sort_index(inplace=True)
-
-        # If not empty, check for new data.
-        if not df.empty:
-            last_date = df.index[-1]
-            new_start_date = (last_date + pd.Timedelta(days=1)).strftime('%Y-%m-%d')
-            today_str = datetime.today().strftime('%Y-%m-%d')
-            if new_start_date < today_str:
-                print(f"[UPDATE] Checking for new data for {ticker} from {new_start_date} to {today_str}")
-                new_df = _safe_download(ticker, new_start_date)
-                if not new_df.empty:
-                    new_df = new_df[['Close']].copy()
-                    new_df.dropna(inplace=True)
-                    new_df.sort_index(inplace=True)
-                    df = pd.concat([df, new_df])
-                    df = df[~df.index.duplicated(keep='last')]
-                    df.sort_index(inplace=True)
-                    df.to_csv(local_csv_path)
-                    print(f"[UPDATE] CSV for {ticker} updated with new data.")
-                else:
-                    print(f"[UPDATE] No new data available for {ticker} after {last_date.date()}.")
-    else:
-        print(f"[YAHOO] Downloading {ticker} from {start_date}")
-        df = _safe_download(ticker, start_date)
-        if not df.empty:
-            df.to_csv(local_csv_path)
 
     if df is None or df.empty:
         raise ValueError(f"No data found for ticker: {ticker}")
