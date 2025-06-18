@@ -13,6 +13,17 @@ def _safe_download(ticker: str, start: str) -> pd.DataFrame:
     """Attempt to download price data with a fallback."""
     try:
         df = yf.download(ticker, start=start, progress=False, show_errors=False)
+    except TypeError as te:
+        # Older versions of yfinance do not support the show_errors argument
+        if "show_errors" in str(te):
+            try:
+                df = yf.download(ticker, start=start, progress=False)
+            except Exception as e:
+                print(f"[WARNING] yf.download failed for {ticker}: {e}")
+                df = pd.DataFrame()
+        else:
+            print(f"[WARNING] yf.download failed for {ticker}: {te}")
+            df = pd.DataFrame()
     except Exception as e:
         print(f"[WARNING] yf.download failed for {ticker}: {e}")
         df = pd.DataFrame()
@@ -23,6 +34,12 @@ def _safe_download(ticker: str, start: str) -> pd.DataFrame:
         except Exception as e:
             print(f"[ERROR] history() failed for {ticker}: {e}")
             df = pd.DataFrame()
+
+    # Ensure the index is timezone naive to avoid comparisons between
+    # tz-aware and tz-naive timestamps when concatenating with CSV data.
+    if not df.empty and getattr(df.index, "tz", None) is not None:
+        df.index = df.index.tz_localize(None)
+
     return df
 
 
@@ -95,6 +112,10 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
                 parse_dates=["Date"],
                 index_col="Date",
             )
+
+        # Ensure index from CSV is timezone naive
+        if getattr(df.index, "tz", None) is not None:
+            df.index = df.index.tz_localize(None)
 
         df.dropna(subset=["Close"], inplace=True)
         df.sort_index(inplace=True)
