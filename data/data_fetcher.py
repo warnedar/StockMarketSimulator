@@ -117,9 +117,13 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
                     index_col="Date",
                 )
 
-            # Ensure index from CSV is timezone naive
+            # Ensure index from CSV is timezone naive and of datetime type
             if getattr(df.index, "tz", None) is not None:
                 df.index = df.index.tz_localize(None)
+
+            # Coerce the index to datetimes to avoid string concatenation issues
+            df.index = pd.to_datetime(df.index, errors="coerce")
+            df = df[~df.index.isna()]
 
             df.dropna(subset=["Close"], inplace=True)
             df.sort_index(inplace=True)
@@ -136,10 +140,14 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
 
             # If not empty, check for new data.
             if not df.empty:
-                last_date = df.index[-1]
-                new_start_date = (last_date + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+                last_date = pd.to_datetime(df.index[-1], errors="coerce")
+                if pd.isna(last_date):
+                    print(f"[WARNING] Last date for {ticker} is invalid; skipping update check.")
+                    new_start_date = None
+                else:
+                    new_start_date = (last_date + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
                 today_str = datetime.today().strftime("%Y-%m-%d")
-                if new_start_date < today_str:
+                if new_start_date and new_start_date < today_str:
                     print(f"[UPDATE] Checking for new data for {ticker} from {new_start_date} to {today_str}")
                     new_df = _safe_download(ticker, new_start_date)
                     if not new_df.empty:
