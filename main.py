@@ -12,6 +12,13 @@ from stock_market_simulator.utils.config_parser import parse_config_file
 from stock_market_simulator.data.data_fetcher import load_historical_data
 from stock_market_simulator.simulation.simulator import run_configured_sweep
 
+
+def run_approach(aname, ticker_strat_dict, years, stepsize):
+    """Run one simulation approach in a separate process."""
+    needed = set(ticker_strat_dict.keys())
+    all_dfs = {tk: load_historical_data(tk) for tk in needed}
+    return run_configured_sweep(all_dfs, aname, ticker_strat_dict, years, stepsize, 10000.0)
+
 def generate_boxplots(approach_data, output_dir, out_name):
     """
     Generate box-and-whisker plots for each metric across all approaches,
@@ -112,14 +119,9 @@ def main():
         years, stepsize, approaches = parse_config_file(config_path)
         approach_data = {}
 
-        def run_approach(aname, ticker_strat_dict):
-            needed = set(ticker_strat_dict.keys())
-            all_dfs = {tk: load_historical_data(tk) for tk in needed}
-            return run_configured_sweep(all_dfs, aname, ticker_strat_dict, years, stepsize, 10000.0)
-
         max_workers = min(workers, len(approaches)) if approaches else 1
-        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            future_map = {executor.submit(run_approach, aname, tdict): aname for aname, tdict in approaches}
+        with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
+            future_map = {executor.submit(run_approach, aname, tdict, years, stepsize): aname for aname, tdict in approaches}
             for fut in concurrent.futures.as_completed(future_map):
                 aname = future_map[fut]
                 try:
