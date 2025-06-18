@@ -159,6 +159,7 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
             if not df.empty:
                 df.to_csv(local_csv_path)
 
+
     if df is None or df.empty:
         raise ValueError(f"No data found for ticker: {ticker}")
 
