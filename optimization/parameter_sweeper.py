@@ -5,6 +5,7 @@ import concurrent.futures
 import os
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 from stock_market_simulator.simulation.simulator import (
     run_hybrid_multi_fund,
     intersect_all_indexes,
@@ -182,7 +183,9 @@ def full_parameter_sweep_advanced_daytrading(ticker_info_dict, dfs_dict, candida
             initargs=(dfs_dict, ticker_info_dict)) as executor:
         n_workers = max_workers or os.cpu_count() or 1
         chunk_size = max(1, len(tasks) // (n_workers * 4))
-        for result in executor.map(candidate_worker, tasks, chunksize=chunk_size):
+        for result in tqdm(
+                executor.map(candidate_worker, tasks, chunksize=chunk_size),
+                total=len(tasks), desc="Running simulations"):
             results.append(result)
 
     return results
