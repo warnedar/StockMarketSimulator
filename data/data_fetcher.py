@@ -73,6 +73,11 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
 
     lock_path = f"{local_csv_path}.lock"
     with FileLock(lock_path):
+        # Re-check cache after acquiring the lock in case another thread
+        # loaded the data while we were waiting.
+        if ticker in _data_cache:
+            print(f"[CACHE HIT] {ticker} in-memory (after lock).")
+            return _data_cache[ticker]
         if os.path.exists(local_csv_path):
             print(f"[LOCAL CSV] Loading {ticker} from {local_csv_path}")
             # Inspect the first line so we can determine how to read the file.
