@@ -5,5 +5,7 @@ yfinance>=0.2
 matplotlib>=3.0
 # Progress bar library
 tqdm>=4.0
+# File locking for safe concurrent CSV updates
+filelock>=3.0
 # Add any others you might need, e.g.:
 # numpy>=1.17
