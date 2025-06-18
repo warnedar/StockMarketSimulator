@@ -37,28 +37,49 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
 
     if os.path.exists(local_csv_path):
         print(f"[LOCAL CSV] Loading {ticker} from {local_csv_path}")
-        # Open the file and check the first line.
+        # Inspect the first line so we can determine how to read the file.
         with open(local_csv_path, 'r') as f:
-            first_line = f.readline()
+            first_line = f.readline().strip()
 
-        # If the first line contains "Date", assume the CSV has a header.
         if "Date" in first_line:
+            # Standard CSV with a header row
             df = pd.read_csv(
                 local_csv_path,
                 parse_dates=["Date"],
-                index_col="Date"
+                index_col="Date",
+            )
+        elif first_line.startswith("Price"):
+            # Custom exported format. The first three lines contain
+            # column labels like "Price"/"Ticker"/"Date". Determine how
+            # many actual columns are present so we can construct the
+            # appropriate list of names.
+            column_count = len(first_line.split(','))
+            if column_count >= 6:
+                names = ["Date", "Close", "High", "Low", "Open", "Volume"]
+            else:
+                # Some files only contain a date and closing price
+                names = ["Date", "Close"]
+            df = pd.read_csv(
+                local_csv_path,
+                skiprows=3,
+                header=None,
+                names=names,
+                usecols=range(len(names)),
+                parse_dates=["Date"],
+                index_col="Date",
             )
         else:
-            # Otherwise, use the old method (skip first 3 rows, no header in the remaining data).
+            # Fallback to the old behaviour of skipping three rows
             df = pd.read_csv(
                 local_csv_path,
                 skiprows=3,
                 header=None,
                 names=["Date", "Close", "High", "Low", "Open", "Volume"],
                 parse_dates=["Date"],
-                index_col="Date"
+                index_col="Date",
             )
-        df.dropna(inplace=True)
+
+        df.dropna(subset=["Close"], inplace=True)
         df.sort_index(inplace=True)
 
         # If CSV is empty, re-download data.
