@@ -1,12 +1,27 @@
 # run_optimization.py
 
+import os
+import sys
 import pandas as pd
-from stock_market_simulator.data.data_fetcher import load_historical_data
-from stock_market_simulator.strategies.base_strategies import STRATEGY_MAP
-from stock_market_simulator.optimization.parameter_sweeper import optimize_full_advanced_daytrading, metric_cagr, metric_lowest_valley
 import multiprocessing
 
+from stock_market_simulator.data.data_fetcher import load_historical_data
+from stock_market_simulator.strategies.base_strategies import STRATEGY_MAP
+from stock_market_simulator.optimization.parameter_sweeper import (
+    optimize_full_advanced_daytrading,
+    metric_cagr,
+)
+from stock_market_simulator.optimization.report_pdf import create_pdf_report
+
 def main():
+    """Run optimization sweep and generate a PDF summary."""
+    output_name = "optimization_output"
+    if len(sys.argv) >= 2:
+        output_name = sys.argv[1]
+
+    out_dir = os.path.join("reports", output_name)
+    os.makedirs(out_dir, exist_ok=True)
+
     # Specify the ticker and load historical data.
     ticker = "^IXIC"  # or any ticker using the advanced_daytrading strategy
     df = load_historical_data(ticker)
@@ -47,6 +62,9 @@ def main():
         # print("  All group results:")
         # for params, avg_metric in all_groups.items():
         #     print(f"    {params}: {avg_metric:.2f}%")
+
+    # Generate PDF summary report
+    create_pdf_report(best_by_year, out_dir)
 
 if __name__ == '__main__':
     multiprocessing.freeze_support()
