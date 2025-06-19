@@ -256,5 +256,11 @@ def main():
 
         buffer.close()
 
+        try:
+            from stock_market_simulator.utils.pdf_report import create_pdf_report
+            create_pdf_report(out_dir)
+        except Exception as e:
+            print(f"Failed to create PDF report: {e}")
+
 if __name__ == "__main__":
     main()

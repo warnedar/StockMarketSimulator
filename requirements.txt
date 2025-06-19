@@ -7,5 +7,7 @@ matplotlib>=3.0
 tqdm>=4.0
 # File locking for safe concurrent CSV updates
 filelock>=3.0
+# PDF generation
+fpdf>=1.0
 # Add any others you might need, e.g.:
 # numpy>=1.17
