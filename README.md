@@ -16,6 +16,8 @@ locally so repeated runs are fast.
   trading parameters to find combinations with the best performance metric.
 - **GUI** – a Tkinter interface in `gui/visualizer.py` lets you run simulations
   interactively and view the resulting equity curves.
+- **Automatic PDF summaries** – results folders include a single PDF combining
+  the config, console log and all generated plots.
 
 ## Requirements
 Install the Python dependencies via:
@@ -24,7 +26,7 @@ Install the Python dependencies via:
 pip install -r requirements.txt
 ```
 
-The simulator relies on `pandas`, `yfinance` and `matplotlib`.
+The simulator relies on `pandas`, `yfinance`, `matplotlib` and `fpdf`.
 
 ## Usage
 ### Running a sweep
@@ -39,8 +41,8 @@ Each `ticker=` line can optionally include `spread` (bid/ask percentage) and
 `expense_ratio` (annual fee percentage).  The expense ratio is deducted daily
 during simulation.
 
-Results are written to `reports/my_report/` including plots and a `report.txt`
-with detailed statistics.
+Results are written to `reports/my_report/` including plots, a `report.txt`
+with detailed statistics and a consolidated `report.pdf`.
 
 ### GUI
 To explore strategies interactively, launch the visualizer:
