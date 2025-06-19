@@ -24,7 +24,15 @@ def main():
         # Add more configs here if desired
     ]
 
-    max_workers = int(sys.argv[1]) if len(sys.argv) >= 2 else (os.cpu_count() or 1)
+    if len(sys.argv) >= 2:
+        try:
+            max_workers = int(sys.argv[1])
+        except ValueError:
+            print(f"Warning: expected integer worker count, got '{sys.argv[1]}'. Using available CPU count.")
+            max_workers = os.cpu_count() or 1
+    else:
+        max_workers = os.cpu_count() or 1
+
     per_job = max(1, max_workers // len(runs))
 
     def run_pair(cfg, out):
