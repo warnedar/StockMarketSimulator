@@ -71,5 +71,17 @@ python run_optimization.py
 - `simulation/` – core portfolio and execution logic.
 - `strategies/` – trading strategy implementations.
 
+## CSV Cache Format
+Historical prices downloaded with `yfinance` are stored under
+`data/local_csv` in a simple six column layout:
+
+```
+Date,Open,High,Low,Close,Volume
+```
+
+If you previously ran the simulator with older versions of the code you may
+have CSV files with different headers.  You can safely delete the old files to
+force fresh downloads or convert them to the new format before running.
+
 ## License
 This project is provided for educational purposes and comes with no warranty.
