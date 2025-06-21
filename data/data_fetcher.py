@@ -103,17 +103,21 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
 
         if os.path.exists(local_csv_path):
             print(f"[LOCAL CSV] Loading {ticker} from {local_csv_path}")
-            df = pd.read_csv(
-                local_csv_path,
-                names=EXPECTED_COLUMNS,
-                header=0,
-                parse_dates=["Date"],
-                index_col="Date",
-            )
-            df = df[EXPECTED_COLUMNS]
-            df.index = pd.to_datetime(df.index, errors="coerce")
-            df = df[~df.index.isna()]
-            df.sort_index(inplace=True)
+            header_cols = list(pd.read_csv(local_csv_path, nrows=0).columns)
+            if header_cols != EXPECTED_COLUMNS:
+                print(f"[WARNING] Unexpected columns in {csv_filename}; redownloading.")
+                df = _safe_download(ticker, start_date)
+                if not df.empty:
+                    df.to_csv(local_csv_path, columns=EXPECTED_COLUMNS)
+            else:
+                df = pd.read_csv(
+                    local_csv_path,
+                    parse_dates=["Date"],
+                    index_col="Date",
+                )
+                df.index = pd.to_datetime(df.index, errors="coerce")
+                df = df[~df.index.isna()]
+                df.sort_index(inplace=True)
 
         if df.empty:
             print(f"[YAHOO] Downloading {ticker} from {start_date}")
