@@ -25,10 +25,13 @@ def momentum_breakout_strategy(portfolio: Portfolio, date, price, day_index):
         state["in_position"] = False
 
     history = state["price_history"]
-    history.append(price)
 
     window = 10
+    # Use the previous `window` days to determine breakout/breakdown levels.
+    # We only append the current price after evaluating the conditions so that
+    # today's price does not influence the threshold calculations.
     if len(history) < window:
+        history.append(price)
         return
 
     recent_window = history[-window:]
@@ -58,3 +61,6 @@ def momentum_breakout_strategy(portfolio: Portfolio, date, price, day_index):
             state["last_sell_day"] = day_index
             if portfolio.shares - qty < 1e-6:
                 state["in_position"] = False
+
+    # Append the current price after evaluation so future windows include it
+    history.append(price)
