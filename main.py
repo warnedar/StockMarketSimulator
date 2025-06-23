@@ -4,6 +4,8 @@ import os
 import sys
 import shutil
 import concurrent.futures
+import argparse
+import logging
 import matplotlib.pyplot as plt
 from io import StringIO
 from collections import defaultdict
@@ -93,16 +95,32 @@ def generate_boxplots(approach_data, output_dir, out_name):
         print(f"Saved boxplot for '{metric_key}' to '{plot_path}'.")
 
 
-def main():
-    if len(sys.argv) < 3:
-        print(
-            "Usage: python -m stock_market_simulator.main <config_file> <output_dir_name> [workers]"
-        )
-        return
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(
+        description="Run stock market simulator on a configuration file."
+    )
+    parser.add_argument("config_file", help="Path to the config file")
+    parser.add_argument("output_dir_name", help="Directory under reports/ for output")
+    parser.add_argument(
+        "workers",
+        nargs="?",
+        type=int,
+        default=None,
+        help="Number of worker processes",
+    )
+    parser.add_argument(
+        "--log-level",
+        default="INFO",
+        help="Logging level (e.g. INFO, DEBUG)",
+    )
 
-    config_path = sys.argv[1]
-    out_name = sys.argv[2]
-    workers = int(sys.argv[3]) if len(sys.argv) >= 4 else (os.cpu_count() or 1)
+    args = parser.parse_args(argv)
+
+    logging.basicConfig(level=getattr(logging, args.log_level.upper(), logging.INFO))
+
+    config_path = args.config_file
+    out_name = args.output_dir_name
+    workers = args.workers if args.workers is not None else (os.cpu_count() or 1)
 
     base_dir = "reports"
     out_dir = os.path.join(base_dir, out_name)
