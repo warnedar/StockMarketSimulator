@@ -110,5 +110,21 @@ python utils/cleanup_cache.py
 Mismatching files are renamed with a `.bad` extension.  Pass `--delete`
 to remove them instead.
 
+## Releasing
+1. Update `__version__` in `__init__.py`.
+2. Commit the change and tag it:
+
+```bash
+git tag vX.Y.Z
+git push --tags
+```
+
+3. Build and upload the package:
+
+```bash
+python -m build
+twine upload dist/*
+```
+
 ## License
 This project is provided for educational purposes and comes with no warranty.
