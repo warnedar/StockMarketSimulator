@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stock_market_simulator"
+version = "0.1.0"
+description = "Stock Market Simulator"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [{name = "Unknown"}]
+
+dependencies = [
+    "pandas>=1.0",
+    "yfinance>=0.2",
+    "matplotlib>=3.0",
+    "tqdm>=4.0",
+    "filelock>=3.0",
+    "fpdf>=1.0",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[project.optional-dependencies]
+test = ["pytest>=6.0"]
