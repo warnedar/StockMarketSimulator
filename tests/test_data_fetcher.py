@@ -1,6 +1,7 @@
 import os
 import sys
 from datetime import datetime as dt
+import logging
 
 import pytest
 
@@ -28,7 +29,7 @@ def _make_df():
     return df
 
 
-def test_download_creates_csv(tmp_path, monkeypatch):
+def test_download_creates_csv(tmp_path, monkeypatch, caplog):
     data_fetcher._data_cache.clear()
 
     df = _make_df()
@@ -40,11 +41,13 @@ def test_download_creates_csv(tmp_path, monkeypatch):
 
     monkeypatch.setattr(data_fetcher, "_safe_download", fake_download)
 
-    result = data_fetcher.load_historical_data(
-        "TEST", start_date="2020-01-01", local_data_dir=str(tmp_path)
-    )
+    with caplog.at_level(logging.INFO, logger=data_fetcher.logger.name):
+        result = data_fetcher.load_historical_data(
+            "TEST", start_date="2020-01-01", local_data_dir=str(tmp_path)
+        )
 
     assert len(calls) == 1
+    assert any("[YAHOO]" in rec.message for rec in caplog.records)
     csv_path = tmp_path / "TEST.csv"
     assert csv_path.exists()
     header = list(pd.read_csv(csv_path, nrows=0).columns)
@@ -52,16 +55,17 @@ def test_download_creates_csv(tmp_path, monkeypatch):
     assert list(result.columns) == [c for c in data_fetcher.EXPECTED_COLUMNS if c != "Date"]
 
 
-def test_uses_local_csv_without_downloading(tmp_path, monkeypatch):
+def test_uses_local_csv_without_downloading(tmp_path, monkeypatch, caplog):
     data_fetcher._data_cache.clear()
 
     df = _make_df()
 
     # Initial download to create the CSV
     monkeypatch.setattr(data_fetcher, "_safe_download", lambda t, s: df.copy())
-    data_fetcher.load_historical_data(
-        "TEST", start_date="2020-01-01", local_data_dir=str(tmp_path)
-    )
+    with caplog.at_level(logging.INFO, logger=data_fetcher.logger.name):
+        data_fetcher.load_historical_data(
+            "TEST", start_date="2020-01-01", local_data_dir=str(tmp_path)
+        )
 
     # Clear cache to force reading from disk
     data_fetcher._data_cache.clear()
@@ -78,10 +82,12 @@ def test_uses_local_csv_without_downloading(tmp_path, monkeypatch):
 
     monkeypatch.setattr(data_fetcher, "_safe_download", fail_download)
 
-    result = data_fetcher.load_historical_data(
-        "TEST", start_date="2020-01-01", local_data_dir=str(tmp_path)
-    )
+    with caplog.at_level(logging.INFO, logger=data_fetcher.logger.name):
+        result = data_fetcher.load_historical_data(
+            "TEST", start_date="2020-01-01", local_data_dir=str(tmp_path)
+        )
 
     csv_path = tmp_path / "TEST.csv"
     assert csv_path.exists()
     assert list(result.columns) == [c for c in data_fetcher.EXPECTED_COLUMNS if c != "Date"]
+    assert any("[LOCAL CSV]" in rec.message for rec in caplog.records)
