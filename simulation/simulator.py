@@ -1,6 +1,7 @@
 # stock_market_simulator/simulation/simulator.py
 
 import pandas as pd
+from config import DEFAULT_CASH
 from stock_market_simulator.simulation.portfolio import Portfolio
 from stock_market_simulator.simulation.execution import execute_orders
 
@@ -9,7 +10,7 @@ class HybridMultiFundPortfolio:
     Combines multiple sub-portfolios (one per ticker),
     each with its own strategy and slice of the total cash.
     """
-    def __init__(self, ticker_info_dict: dict, initial_cash=10000.0):
+    def __init__(self, ticker_info_dict: dict, initial_cash: float = DEFAULT_CASH):
         # ticker_info_dict is a mapping: ticker -> { "strategy": strategy_func, "spread": spread (as percentage),
         #     optionally "trailing_stop_pct", "limit_buy_discount_pct", "pending_limit_days" }
         self.initial_cash = initial_cash
@@ -107,7 +108,14 @@ def find_monthly_starts_first_open(common_idx):
     monthly_starts = [by_ym[k] for k in keys]
     return monthly_starts
 
-def run_configured_sweep(dfs_dict, approach_name, ticker_info_dict, years, stepsize, initial_cash=10000.0):
+def run_configured_sweep(
+    dfs_dict,
+    approach_name,
+    ticker_info_dict,
+    years,
+    stepsize,
+    initial_cash: float = DEFAULT_CASH,
+):
     """
     Runs multiple subrange simulations, each lasting `years` years,
     and computes performance metrics.

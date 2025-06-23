@@ -14,6 +14,8 @@ import csv
 import os
 from typing import Iterable
 
+from config import LOCAL_DATA_DIR, GUI_DATA_DIR
+
 EXPECTED_HEADER = ["Date", "Open", "High", "Low", "Close", "Volume"]
 
 
@@ -53,7 +55,7 @@ def main(argv: Iterable[str] | None = None) -> None:
     )
     args = parser.parse_args(list(argv) if argv is not None else None)
 
-    for directory in ("data/local_csv", "gui/data/local_csv"):
+    for directory in (LOCAL_DATA_DIR, GUI_DATA_DIR):
         _process_dir(directory, delete=args.delete)
 
 

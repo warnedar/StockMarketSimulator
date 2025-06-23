@@ -15,8 +15,11 @@ class Order:
         self.placement_day = None
 
 
+from config import DEFAULT_CASH
+
+
 class Portfolio:
-    def __init__(self, initial_cash=10000.0):
+    def __init__(self, initial_cash: float = DEFAULT_CASH):
         self.cash = initial_cash
         self.shares = 0.0
         self.orders = []

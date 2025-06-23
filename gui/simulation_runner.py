@@ -2,11 +2,21 @@
 
 import pandas as pd
 from datetime import datetime
-from stock_market_simulator.simulation.simulator import run_hybrid_multi_fund, intersect_all_indexes, \
-    HybridMultiFundPortfolio
+from config import DEFAULT_CASH
+from stock_market_simulator.simulation.simulator import (
+    run_hybrid_multi_fund,
+    intersect_all_indexes,
+    HybridMultiFundPortfolio,
+)
 
 
-def run_simulation(ticker_info_dict, dfs_dict, start_date_str, years, initial_cash=10000.0):
+def run_simulation(
+    ticker_info_dict,
+    dfs_dict,
+    start_date_str,
+    years,
+    initial_cash: float = DEFAULT_CASH,
+):
     """
     Run a single simulation for the given approach over the specified window.
 

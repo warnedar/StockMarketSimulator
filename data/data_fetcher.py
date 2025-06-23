@@ -3,6 +3,8 @@
 import os
 from datetime import datetime
 
+from config import LOCAL_DATA_DIR
+
 import pandas as pd
 import yfinance as yf
 from filelock import FileLock
@@ -67,7 +69,11 @@ def _safe_download(ticker: str, start: str) -> pd.DataFrame:
     return df
 
 
-def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="data/local_csv") -> pd.DataFrame:
+def load_historical_data(
+    ticker: str,
+    start_date="1980-01-01",
+    local_data_dir: str = LOCAL_DATA_DIR,
+) -> pd.DataFrame:
     """
     Load historical data for 'ticker' from a local CSV if available;
     otherwise download from Yahoo Finance and store a local copy.

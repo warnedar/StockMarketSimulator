@@ -10,6 +10,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 import os
 
+from config import DEFAULT_CASH
+
 from stock_market_simulator.utils.config_parser import parse_config_file
 from stock_market_simulator.data.data_fetcher import load_historical_data
 from stock_market_simulator.gui.simulation_runner import run_simulation
@@ -61,7 +63,7 @@ class SimulatorVisualizer(tk.Tk):
         tk.Label(frame_params, text="Initial Cash:").grid(row=2, column=0, sticky=tk.W)
         self.entry_cash = tk.Entry(frame_params)
         self.entry_cash.grid(row=2, column=1, padx=5)
-        self.entry_cash.insert(0, "10000")
+        self.entry_cash.insert(0, str(DEFAULT_CASH))
 
         btn_run = tk.Button(frame_params, text="Run Simulation", command=self.run_simulation)
         btn_run.grid(row=3, column=0, columnspan=2, pady=10)
