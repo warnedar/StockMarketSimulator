@@ -21,7 +21,7 @@ from stock_market_simulator.strategies.momentum_breakout_strategy import momentu
 from stock_market_simulator.strategies.rsi_strategy import rsi_strategy
 
 
-def buy_hold_strategy(portfolio: Portfolio, date, price, day_index):
+def buy_hold_strategy(portfolio: Portfolio, date, price: float, day_index: int) -> None:
     """
     Buy-and-hold strategy: Buy everything on the first day and then hold.
     """
@@ -32,7 +32,7 @@ def buy_hold_strategy(portfolio: Portfolio, date, price, day_index):
         portfolio.orders.append(order)
 
 
-def advanced_daytrading(portfolio: Portfolio, date, price, day_index):
+def advanced_daytrading(portfolio: Portfolio, date, price: float, day_index: int) -> None:
     """
     Advanced Day Trading Strategy.
 
@@ -107,21 +107,21 @@ def advanced_daytrading(portfolio: Portfolio, date, price, day_index):
             st["limit_buy_price"] = None
 
 
-def sma_trading_strategy(portfolio: Portfolio, date, price, day_index):
+def sma_trading_strategy(portfolio: Portfolio, date, price: float, day_index: int) -> None:
     """
     Delegates to the imported SMA Trading Strategy.
     """
     imported_sma_trading_strategy(portfolio, date, price, day_index)
 
 
-def momentum_breakout_strategy_wrapper(portfolio: Portfolio, date, price, day_index):
+def momentum_breakout_strategy_wrapper(portfolio: Portfolio, date, price: float, day_index: int) -> None:
     """
     Delegates to the imported Momentum Breakout Strategy.
     """
     momentum_breakout_strategy(portfolio, date, price, day_index)
 
 
-def rsi_strategy_wrapper(portfolio: Portfolio, date, price, day_index):
+def rsi_strategy_wrapper(portfolio: Portfolio, date, price: float, day_index: int) -> None:
     """
     Delegates to the imported RSI Strategy.
     """
