@@ -1,14 +1,5 @@
-import os
-import sys
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-# Alias submodule to satisfy absolute imports used inside the strategy
-import simulation.portfolio as pf_module
-sys.modules['stock_market_simulator.simulation.portfolio'] = pf_module
-
-from strategies.momentum_breakout_strategy import momentum_breakout_strategy
-from simulation.portfolio import Portfolio
+from stock_market_simulator.strategies.momentum_breakout_strategy import momentum_breakout_strategy
+from stock_market_simulator.simulation.portfolio import Portfolio
 
 
 def test_buy_order_on_breakout():
