@@ -63,6 +63,17 @@ and run:
 python run_optimization.py
 ```
 
+### Profiling
+`profile_runner.py` wraps `batch_runner` using Python's `cProfile` module. Run it with:
+
+```bash
+python -m stock_market_simulator.profile_runner
+```
+
+This generates a `batch_output.prof` file with profiling statistics.
+Passing `-m cProfile` directly to `batch_runner.py` will be treated as the
+worker-count argument, resulting in a warning.
+
 ## Repository Layout
 - `config/` – sample configuration files.
 - `data/` – historical data loader and local CSV cache.
