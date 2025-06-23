@@ -5,6 +5,7 @@ import concurrent.futures
 import os
 import numpy as np
 import pandas as pd
+from config import DEFAULT_CASH
 from tqdm import tqdm
 from stock_market_simulator.simulation.simulator import (
     run_hybrid_multi_fund,
@@ -27,8 +28,14 @@ def _init_worker(dfs_dict, ticker_info_dict):
     _TICKER_INFO_DICT = ticker_info_dict
 
 
-def run_advanced_daytrading_simulation(ticker_info_dict, dfs_dict, start_date, years, initial_cash=10000.0,
-                                       return_history=False):
+def run_advanced_daytrading_simulation(
+    ticker_info_dict,
+    dfs_dict,
+    start_date,
+    years,
+    initial_cash: float = DEFAULT_CASH,
+    return_history=False,
+):
     """
     Runs a simulation for the given advanced_daytrading approach over the specified window.
 
@@ -136,9 +143,17 @@ def candidate_worker(args):
         return (start_date, years, ts_pct, lb_discount, pl_days, None)
 
 
-def full_parameter_sweep_advanced_daytrading(ticker_info_dict, dfs_dict, candidate_years, initial_cash,
-                                             trailing_stop_values, limit_buy_discount_values, pending_limit_days_values,
-                                             metric_selector=metric_final, max_workers=None):
+def full_parameter_sweep_advanced_daytrading(
+    ticker_info_dict,
+    dfs_dict,
+    candidate_years,
+    initial_cash: float,
+    trailing_stop_values,
+    limit_buy_discount_values,
+    pending_limit_days_values,
+    metric_selector=metric_final,
+    max_workers=None,
+):
     """
     Performs a grid search over simulation parameters and advanced_daytrading strategy parameters.
 
@@ -191,9 +206,17 @@ def full_parameter_sweep_advanced_daytrading(ticker_info_dict, dfs_dict, candida
     return results
 
 
-def optimize_full_advanced_daytrading(ticker_info_dict, dfs_dict, candidate_years, initial_cash,
-                                      trailing_stop_values, limit_buy_discount_values, pending_limit_days_values,
-                                      metric_selector=metric_final, max_workers=None):
+def optimize_full_advanced_daytrading(
+    ticker_info_dict,
+    dfs_dict,
+    candidate_years,
+    initial_cash: float,
+    trailing_stop_values,
+    limit_buy_discount_values,
+    pending_limit_days_values,
+    metric_selector=metric_final,
+    max_workers=None,
+):
     """
     Optimizes the advanced_daytrading strategy parameters along with the simulation window (years)
     by performing a grid search over:

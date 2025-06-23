@@ -5,6 +5,8 @@ import sys
 import pandas as pd
 import multiprocessing
 
+from config import DEFAULT_CASH, REPORTS_DIR
+
 from stock_market_simulator.data.data_fetcher import load_historical_data
 from stock_market_simulator.strategies.base_strategies import STRATEGY_MAP
 from stock_market_simulator.optimization.parameter_sweeper import (
@@ -19,7 +21,7 @@ def main():
     if len(sys.argv) >= 2:
         output_name = sys.argv[1]
 
-    out_dir = os.path.join("reports", output_name)
+    out_dir = os.path.join(REPORTS_DIR, output_name)
     os.makedirs(out_dir, exist_ok=True)
 
     # Specify the ticker and load historical data.
@@ -44,7 +46,7 @@ def main():
     trailing_stop_values = [8.0, 9.0, 10.0, 11.0, 12.0]
     limit_buy_discount_values = [3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0]
     pending_limit_days_values = [40, 45,  50, 55, 60]
-    initial_cash = 10000.0
+    initial_cash = DEFAULT_CASH
 
     # For example, optimize based on CAGR.
     from stock_market_simulator.optimization.parameter_sweeper import optimize_full_advanced_daytrading, metric_cagr
