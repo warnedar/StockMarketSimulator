@@ -1,0 +1,3 @@
+# Ignore merge utility artifacts
+merge.js
+merged.txt
