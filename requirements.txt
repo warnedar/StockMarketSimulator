@@ -9,5 +9,7 @@ tqdm>=4.0
 filelock>=3.0
 # PDF generation
 fpdf>=1.0
+# Testing framework
+pytest>=6.0
 # Add any others you might need, e.g.:
 # numpy>=1.17
