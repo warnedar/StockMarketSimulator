@@ -2,7 +2,9 @@ import os
 import sys
 from datetime import datetime as dt
 
-import pandas as pd
+import pytest
+
+pd = pytest.importorskip("pandas")
 
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
