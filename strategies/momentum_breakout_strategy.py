@@ -16,7 +16,20 @@ The strategy maintains its state (price history, last order days, and in_positio
 
 from stock_market_simulator.simulation.portfolio import Order, Portfolio
 
-def momentum_breakout_strategy(portfolio: Portfolio, date, price, day_index):
+def momentum_breakout_strategy(portfolio: Portfolio, date, price: float, day_index: int) -> None:
+    """Simple momentum breakout strategy.
+
+    Parameters
+    ----------
+    portfolio:
+        Portfolio instance tracking state and orders.
+    date:
+        Current date (unused but kept for API parity).
+    price:
+        Current closing price.
+    day_index:
+        Integer index of the current day in the simulation.
+    """
     state = portfolio.strategy_state
     if "price_history" not in state:
         state["price_history"] = []

@@ -1,6 +1,7 @@
 # stock_market_simulator/simulation/simulator.py
 
 import pandas as pd
+from pandas import DataFrame, DatetimeIndex
 from stock_market_simulator.simulation.portfolio import Portfolio
 from stock_market_simulator.simulation.execution import execute_orders
 
@@ -9,7 +10,7 @@ class HybridMultiFundPortfolio:
     Combines multiple sub-portfolios (one per ticker),
     each with its own strategy and slice of the total cash.
     """
-    def __init__(self, ticker_info_dict: dict, initial_cash=10000.0):
+    def __init__(self, ticker_info_dict: dict[str, dict], initial_cash: float = 10000.0) -> None:
         # ticker_info_dict is a mapping: ticker -> { "strategy": strategy_func, "spread": spread (as percentage),
         #     optionally "trailing_stop_pct", "limit_buy_discount_pct", "pending_limit_days" }
         self.initial_cash = initial_cash
@@ -35,9 +36,9 @@ class HybridMultiFundPortfolio:
                 pf.advanced_params = advanced_params
             self.sub_portfolios.append((tkSym, pf))
             self.strategies_for_tickers[tkSym] = ticker_info_dict[tkSym]["strategy"]
-        self.history = []
+        self.history: list[float] = []
 
-    def total_value(self, day_prices: dict) -> float:
+    def total_value(self, day_prices: dict[str, float]) -> float:
         """
         Computes total portfolio value given a dict of day_prices.
         """
@@ -47,10 +48,21 @@ class HybridMultiFundPortfolio:
             tv += pf.total_value(px)
         return tv
 
-def run_hybrid_multi_fund(dfs_dict, hybrid_pf: HybridMultiFundPortfolio):
-    """
-    Given a dict {ticker: DataFrame}, run day-by-day simulation.
-    Returns (history_percent_gains, final_index).
+def run_hybrid_multi_fund(dfs_dict: dict[str, DataFrame], hybrid_pf: HybridMultiFundPortfolio) -> tuple[list[float], DatetimeIndex]:
+    """Run a day-by-day simulation for ``hybrid_pf`` using ``dfs_dict``.
+
+    Parameters
+    ----------
+    dfs_dict:
+        Mapping of ticker symbols to price DataFrames. Each DataFrame must
+        contain a ``'Close'`` column.
+    hybrid_pf:
+        The :class:`HybridMultiFundPortfolio` to operate on.
+
+    Returns
+    -------
+    tuple[list[float], :class:`pandas.DatetimeIndex`]
+        History of percent gains and the index used for simulation.
     """
     tickers = hybrid_pf.tickers
     main_tk = tickers[0]
@@ -82,10 +94,8 @@ def run_hybrid_multi_fund(dfs_dict, hybrid_pf: HybridMultiFundPortfolio):
 
     return hybrid_pf.history, final_index
 
-def intersect_all_indexes(dfs_dict):
-    """
-    Intersect indexes among all DataFrames to ensure alignment.
-    """
+def intersect_all_indexes(dfs_dict: dict[str, DataFrame]) -> DatetimeIndex:
+    """Intersect indexes among all DataFrames to ensure alignment."""
     all_idx = [df.index for df in dfs_dict.values()]
     if not all_idx:
         raise ValueError("No DataFrames to intersect!")
@@ -94,10 +104,8 @@ def intersect_all_indexes(dfs_dict):
         common = common.intersection(idx)
     return common.sort_values()
 
-def find_monthly_starts_first_open(common_idx):
-    """
-    For a given DateTimeIndex, find the first open date of each month.
-    """
+def find_monthly_starts_first_open(common_idx: DatetimeIndex) -> list[pd.Timestamp]:
+    """Return the first open date of each month within ``common_idx``."""
     by_ym = {}
     for dt in common_idx:
         ym = (dt.year, dt.month)
@@ -107,11 +115,8 @@ def find_monthly_starts_first_open(common_idx):
     monthly_starts = [by_ym[k] for k in keys]
     return monthly_starts
 
-def run_configured_sweep(dfs_dict, approach_name, ticker_info_dict, years, stepsize, initial_cash=10000.0):
-    """
-    Runs multiple subrange simulations, each lasting `years` years,
-    and computes performance metrics.
-    """
+def run_configured_sweep(dfs_dict: dict[str, DataFrame], approach_name: str, ticker_info_dict: dict[str, dict], years: int, stepsize: int, initial_cash: float = 10000.0) -> tuple[dict, list, dict]:
+    """Run multiple subrange simulations and compute performance metrics."""
     common_idx = intersect_all_indexes(dfs_dict)
     if common_idx.empty:
         raise ValueError(f"No intersection for approach {approach_name}.")

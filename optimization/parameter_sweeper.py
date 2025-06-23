@@ -16,19 +16,25 @@ from stock_market_simulator.simulation.simulator import (
 # Shared data loaded once per worker. These globals are populated by
 # the process pool initializer to avoid repeatedly sending large
 # DataFrames to every task.
-_DFS_DICT = None
-_TICKER_INFO_DICT = None
+_DFS_DICT: dict | None = None
+_TICKER_INFO_DICT: dict | None = None
 
 
-def _init_worker(dfs_dict, ticker_info_dict):
+def _init_worker(dfs_dict: dict[str, pd.DataFrame], ticker_info_dict: dict[str, dict]) -> None:
     """Initializer for worker processes."""
     global _DFS_DICT, _TICKER_INFO_DICT
     _DFS_DICT = dfs_dict
     _TICKER_INFO_DICT = ticker_info_dict
 
 
-def run_advanced_daytrading_simulation(ticker_info_dict, dfs_dict, start_date, years, initial_cash=10000.0,
-                                       return_history=False):
+def run_advanced_daytrading_simulation(
+    ticker_info_dict: dict[str, dict],
+    dfs_dict: dict[str, pd.DataFrame],
+    start_date: pd.Timestamp,
+    years: int,
+    initial_cash: float = 10000.0,
+    return_history: bool = False,
+) -> list[float] | float:
     """
     Runs a simulation for the given advanced_daytrading approach over the specified window.
 
@@ -65,12 +71,12 @@ def run_advanced_daytrading_simulation(ticker_info_dict, dfs_dict, start_date, y
 
 
 # Example metric selector functions:
-def metric_final(history, years):
+def metric_final(history: list[float], years: int) -> float:
     """Return the final percent return."""
     return history[-1]
 
 
-def metric_cagr(history, years):
+def metric_cagr(history: list[float], years: int) -> float:
     """Return the compound annual growth rate (CAGR)."""
     final_return = history[-1]
     total_growth = 1.0 + (final_return / 100.0)
@@ -79,27 +85,27 @@ def metric_cagr(history, years):
     return (total_growth ** (1 / years) - 1) * 100.0
 
 
-def metric_highest_peak(history, years):
+def metric_highest_peak(history: list[float], years: int) -> float:
     """Return the highest peak value during the simulation."""
     return max(history)
 
 
-def metric_lowest_valley(history, years):
+def metric_lowest_valley(history: list[float], years: int) -> float:
     """Return the lowest valley value during the simulation."""
     return min(history)
 
 
-def metric_average(history, years):
+def metric_average(history: list[float], years: int) -> float:
     """Return the average of the simulation history."""
     return np.mean(history)
 
 
-def metric_median(history, years):
+def metric_median(history: list[float], years: int) -> float:
     """Return the median value of the simulation history."""
     return np.median(history)
 
 
-def candidate_worker(args):
+def candidate_worker(args: tuple) -> tuple:
     """Run a single candidate simulation.
 
     Args is a tuple:
@@ -136,9 +142,17 @@ def candidate_worker(args):
         return (start_date, years, ts_pct, lb_discount, pl_days, None)
 
 
-def full_parameter_sweep_advanced_daytrading(ticker_info_dict, dfs_dict, candidate_years, initial_cash,
-                                             trailing_stop_values, limit_buy_discount_values, pending_limit_days_values,
-                                             metric_selector=metric_final, max_workers=None):
+def full_parameter_sweep_advanced_daytrading(
+    ticker_info_dict: dict[str, dict],
+    dfs_dict: dict[str, pd.DataFrame],
+    candidate_years: list[int],
+    initial_cash: float,
+    trailing_stop_values: list[float],
+    limit_buy_discount_values: list[float],
+    pending_limit_days_values: list[int],
+    metric_selector=metric_final,
+    max_workers: int | None = None,
+) -> list[tuple]:
     """
     Performs a grid search over simulation parameters and advanced_daytrading strategy parameters.
 
@@ -191,9 +205,17 @@ def full_parameter_sweep_advanced_daytrading(ticker_info_dict, dfs_dict, candida
     return results
 
 
-def optimize_full_advanced_daytrading(ticker_info_dict, dfs_dict, candidate_years, initial_cash,
-                                      trailing_stop_values, limit_buy_discount_values, pending_limit_days_values,
-                                      metric_selector=metric_final, max_workers=None):
+def optimize_full_advanced_daytrading(
+    ticker_info_dict: dict[str, dict],
+    dfs_dict: dict[str, pd.DataFrame],
+    candidate_years: list[int],
+    initial_cash: float,
+    trailing_stop_values: list[float],
+    limit_buy_discount_values: list[float],
+    pending_limit_days_values: list[int],
+    metric_selector=metric_final,
+    max_workers: int | None = None,
+) -> dict[int, tuple]:
     """
     Optimizes the advanced_daytrading strategy parameters along with the simulation window (years)
     by performing a grid search over:

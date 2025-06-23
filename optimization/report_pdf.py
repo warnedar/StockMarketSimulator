@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
 
-def _plot_heatmap(pivot_df, title, pdf):
+def _plot_heatmap(pivot_df: pd.DataFrame, title: str, pdf: PdfPages) -> None:
+    """Plot a single heatmap page in the PDF."""
     fig, ax = plt.subplots()
     im = ax.imshow(pivot_df.values, cmap="viridis", aspect="auto", origin="lower")
     ax.set_xticks(range(len(pivot_df.columns)))
@@ -25,7 +26,7 @@ def _plot_heatmap(pivot_df, title, pdf):
     plt.close(fig)
 
 
-def create_pdf_report(best_by_year, output_dir):
+def create_pdf_report(best_by_year: dict[int, tuple], output_dir: str) -> str:
     """Create a PDF summary report for optimization results."""
     os.makedirs(output_dir, exist_ok=True)
     pdf_path = os.path.join(output_dir, "optimization_summary.pdf")

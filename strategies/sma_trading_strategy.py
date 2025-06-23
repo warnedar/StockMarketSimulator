@@ -14,7 +14,8 @@ The strategy stores its price history and last order days in portfolio.strategy_
 
 from stock_market_simulator.simulation.portfolio import Order, Portfolio
 
-def sma_trading_strategy(portfolio: Portfolio, date, price, day_index):
+def sma_trading_strategy(portfolio: Portfolio, date, price: float, day_index: int) -> None:
+    """Trading strategy based on two simple moving averages."""
     state = portfolio.strategy_state
 
     if "sma_trading_history" not in state:

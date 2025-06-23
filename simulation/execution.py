@@ -3,20 +3,28 @@
 from stock_market_simulator.simulation.portfolio import Portfolio, Order
 
 
-def execute_orders(current_price, portfolio: Portfolio, day_index):
-    """
-    Executes any existing orders in the portfolio if their conditions are met.
-    Removes executed orders from the portfolio's order list.
+def execute_orders(current_price: float, portfolio: Portfolio, day_index: int) -> None:
+    """Execute any pending orders if their conditions are satisfied.
 
-    This version takes into account a fixed bid/ask spread stored in portfolio.spread,
-    which is now interpreted as a percentage.
+    Parameters
+    ----------
+    current_price:
+        The current market price of the security.
+    portfolio:
+        The :class:`Portfolio` whose orders should be processed.
+    day_index:
+        Integer index of the current simulation day.
 
-    For buy orders, the effective execution price is:
-      current_price * (1 + (spread/200))
-    For sell orders, it is:
-      current_price * (1 - (spread/200))
-
-    This adjustment applies half the spread percentage on either side.
+    Notes
+    -----
+    Executed orders are removed from ``portfolio.orders``. The function
+    accounts for ``portfolio.spread`` which is interpreted as a percentage
+    bid/ask spread and applied half on each side.
+    
+    Returns
+    -------
+    None
+        The portfolio is modified in place.
     """
     executed = []
     # Retrieve the fixed spread (default 0.0 if not set), interpreted as a percentage.
