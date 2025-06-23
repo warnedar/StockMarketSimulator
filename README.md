@@ -101,7 +101,14 @@ Date,Open,High,Low,Close,Volume
 
 See `data/CSV_FORMAT.md` for details.  If legacy files exist, use the
 conversion script from the previous task or remove them to trigger fresh
-downloads.
+downloads.  You can also run the cleanup helper:
+
+```bash
+python utils/cleanup_cache.py
+```
+
+Mismatching files are renamed with a `.bad` extension.  Pass `--delete`
+to remove them instead.
 
 ## License
 This project is provided for educational purposes and comes with no warranty.
