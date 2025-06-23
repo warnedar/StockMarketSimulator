@@ -107,7 +107,9 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
             if header_cols != EXPECTED_COLUMNS:
                 print(f"[WARNING] Unexpected columns in {csv_filename}; redownloading.")
                 df = _safe_download(ticker, start_date)
-                df.to_csv(local_csv_path, columns=EXPECTED_COLUMNS)
+                df.reset_index()[EXPECTED_COLUMNS].to_csv(
+                    local_csv_path, index=False
+                )
             else:
                 df = pd.read_csv(
                     local_csv_path,
@@ -122,7 +124,9 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
             print(f"[YAHOO] Downloading {ticker} from {start_date}")
             df = _safe_download(ticker, start_date)
             if not df.empty:
-                df[EXPECTED_COLUMNS].to_csv(local_csv_path)
+                df.reset_index()[EXPECTED_COLUMNS].to_csv(
+                    local_csv_path, index=False
+                )
         else:
             last_date = df.index[-1]
             new_start_date = (last_date + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
@@ -136,7 +140,9 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
                     df = pd.concat([df, new_df])
                     df = df[~df.index.duplicated(keep='last')]
                     df.sort_index(inplace=True)
-                    df[EXPECTED_COLUMNS].to_csv(local_csv_path)
+                    df.reset_index()[EXPECTED_COLUMNS].to_csv(
+                        local_csv_path, index=False
+                    )
                     print(f"[UPDATE] CSV for {ticker} updated with new data.")
                 else:
                     print(
