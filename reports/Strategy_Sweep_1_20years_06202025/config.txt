@@ -1,0 +1,36 @@
+# This config file sets up a 15-year investment window
+years=20
+
+# We'll do a 1-month step for our sweeps
+stepsize=1
+
+approach=S&P500_buyhold
+    ticker=^GSPC, strategy=buy_hold, spread=0.05, expense_ratio=0.1
+
+approach=S&P500_SMA_Trading
+    ticker=^GSPC, strategy=sma_trading, spread=0.05, expense_ratio=0.1
+
+approach=S&P500_adv_daytrading
+    ticker=^GSPC, strategy=advanced_daytrading, spread=0.05, expense_ratio=0.1
+
+approach=S&P500_RSI
+    ticker=^GSPC, strategy=rsi, spread=0.05, expense_ratio=0.1
+
+approach=S&P500_Momentum_Breakout
+    ticker=^GSPC, strategy=momentum_breakout, spread=0.05, expense_ratio=0.1
+
+approach=NASDAQ_buyhold
+    ticker=^IXIC, strategy=buy_hold, spread=0.05, expense_ratio=0.1
+
+approach=NASDAQ_SMA_Trading
+    ticker=^IXIC, strategy=sma_trading, spread=0.05, expense_ratio=0.1
+
+approach=NASDAQ_adv_daytrading
+    ticker=^IXIC, strategy=advanced_daytrading, spread=0.05, expense_ratio=0.1
+
+approach=NASDAQ_RSI
+    ticker=^IXIC, strategy=rsi, spread=0.05, expense_ratio=0.1
+
+approach=NASDAQ_Momentum_Breakout
+    ticker=^IXIC, strategy=momentum_breakout, spread=0.05, expense_ratio=0.1
+

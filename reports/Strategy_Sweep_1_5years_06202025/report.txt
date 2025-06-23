@@ -1,0 +1,61 @@
+=== Approach: S&P500_buyhold ===
+lowest_valley => min:-56.35 (start 2007-10-01), max:-0.03 (start 1983-02-01), avg:-16.03
+highest_peak  => min:-0.00 (start 2000-09-01), max:218.16 (start 1995-01-03), avg:77.10
+final_result  => min:-36.42 (start 2004-03-01), max:218.16 (start 1995-01-03), avg:61.23
+avg_annual_return => min:-8.66% (start 2004-03-01), max:26.05% (start 1995-01-03), avg:9.12%
+
+=== Approach: S&P500_SMA_Trading ===
+lowest_valley => min:-56.14 (start 2007-05-01), max:-0.02 (start 1985-09-03), avg:-15.69
+highest_peak  => min:-0.00 (start 2000-07-03), max:206.06 (start 1994-09-01), avg:71.67
+final_result  => min:-35.52 (start 2004-03-01), max:195.22 (start 1995-01-03), avg:56.32
+avg_annual_return => min:-8.40% (start 2004-03-01), max:24.17% (start 1995-01-03), avg:8.47%
+
+=== Approach: S&P500_adv_daytrading ===
+lowest_valley => min:-51.11 (start 1999-07-01), max:-0.03 (start 1983-02-01), avg:-12.67
+highest_peak  => min:-0.00 (start 2000-09-01), max:239.81 (start 1994-12-01), avg:81.63
+final_result  => min:-30.89 (start 1999-07-01), max:228.67 (start 1994-07-01), avg:64.26
+avg_annual_return => min:-7.12% (start 1999-07-01), max:26.87% (start 1994-07-01), avg:9.46%
+
+=== Approach: S&P500_RSI ===
+lowest_valley => min:-11.54 (start 2008-03-03), max:-0.01 (start 2002-07-01), avg:-2.04
+highest_peak  => min:-0.00 (start 1987-09-01), max:11.67 (start 1982-07-01), avg:4.94
+final_result  => min:-6.83 (start 2008-03-03), max:11.43 (start 1982-07-01), avg:3.48
+avg_annual_return => min:-1.41% (start 2008-03-03), max:2.19% (start 1982-07-01), avg:0.68%
+
+=== Approach: S&P500_Momentum_Breakout ===
+lowest_valley => min:-0.35 (start 1988-04-04), max:-0.34 (start 1999-07-01), avg:-0.34
+highest_peak  => min:-0.00 (start 1980-01-02), max:-0.00 (start 1980-01-02), avg:-0.00
+final_result  => min:-0.35 (start 1988-04-04), max:-0.34 (start 1999-07-01), avg:-0.34
+avg_annual_return => min:-0.07% (start 1988-04-04), max:-0.07% (start 1999-07-01), avg:-0.07%
+
+=== Approach: NASDAQ_buyhold ===
+lowest_valley => min:-76.67 (start 2000-03-01), max:-0.03 (start 2017-02-01), avg:-18.90
+highest_peak  => min:-0.00 (start 2000-09-01), max:519.54 (start 1995-04-03), avg:118.73
+final_result  => min:-56.72 (start 2000-03-01), max:477.49 (start 1995-03-01), avg:81.43
+avg_annual_return => min:-15.42% (start 2000-03-01), max:42.01% (start 1995-03-01), avg:11.16%
+
+=== Approach: NASDAQ_SMA_Trading ===
+lowest_valley => min:-75.54 (start 2000-01-03), max:-0.02 (start 2017-02-01), avg:-18.30
+highest_peak  => min:0.11 (start 2000-08-01), max:433.30 (start 1995-04-03), avg:107.23
+final_result  => min:-52.27 (start 2000-01-03), max:414.22 (start 1995-03-01), avg:73.30
+avg_annual_return => min:-13.75% (start 2000-01-03), max:38.75% (start 1995-03-01), avg:10.24%
+
+=== Approach: NASDAQ_adv_daytrading ===
+lowest_valley => min:-61.95 (start 2001-02-01), max:-0.03 (start 1997-07-01), avg:-11.87
+highest_peak  => min:-0.00 (start 2000-09-01), max:490.05 (start 1995-04-03), avg:128.98
+final_result  => min:-33.74 (start 2001-02-01), max:450.03 (start 1995-03-01), avg:100.84
+avg_annual_return => min:-7.90% (start 2001-02-01), max:40.63% (start 1995-03-01), avg:13.96%
+
+=== Approach: NASDAQ_RSI ===
+lowest_valley => min:-11.10 (start 2000-08-01), max:-0.01 (start 2001-09-04), avg:-4.16
+highest_peak  => min:-0.00 (start 1980-01-02), max:10.17 (start 2014-03-03), avg:3.64
+final_result  => min:-9.73 (start 2000-09-01), max:9.22 (start 2011-09-01), avg:0.19
+avg_annual_return => min:-2.03% (start 2000-09-01), max:1.78% (start 2011-09-01), avg:0.02%
+
+=== Approach: NASDAQ_Momentum_Breakout ===
+lowest_valley => min:-0.35 (start 1988-04-04), max:-0.34 (start 1999-07-01), avg:-0.34
+highest_peak  => min:-0.00 (start 1980-01-02), max:-0.00 (start 1980-01-02), avg:-0.00
+final_result  => min:-0.35 (start 1988-04-04), max:-0.34 (start 1999-07-01), avg:-0.34
+avg_annual_return => min:-0.07% (start 1988-04-04), max:-0.07% (start 1999-07-01), avg:-0.07%
+
+Histogram saved to reports\Strategy_Sweep_1_5years_06202025\histogram.png

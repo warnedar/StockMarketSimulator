@@ -1,0 +1,61 @@
+=== Approach: S&P500_buyhold ===
+lowest_valley => min:-56.35 (start 2007-10-01), max:-0.03 (start 1983-02-01), avg:-20.88
+highest_peak  => min:39.00 (start 1998-04-01), max:794.62 (start 1984-08-01), avg:310.65
+final_result  => min:30.94 (start 2000-10-02), max:785.76 (start 1985-01-02), avg:261.26
+avg_annual_return => min:1.81% (start 2000-10-02), max:15.65% (start 1985-01-02), avg:8.07%
+
+=== Approach: S&P500_SMA_Trading ===
+lowest_valley => min:-56.14 (start 2007-05-01), max:-0.02 (start 1985-09-03), avg:-20.75
+highest_peak  => min:29.16 (start 1999-04-01), max:754.39 (start 1984-09-04), avg:296.49
+final_result  => min:22.70 (start 1998-01-02), max:721.62 (start 1984-05-01), avg:247.32
+avg_annual_return => min:1.37% (start 1998-01-02), max:15.07% (start 1984-05-01), avg:7.77%
+
+=== Approach: S&P500_adv_daytrading ===
+lowest_valley => min:-51.11 (start 1999-07-01), max:-0.03 (start 1983-02-01), avg:-14.77
+highest_peak  => min:39.20 (start 1999-07-01), max:896.65 (start 1984-08-01), avg:333.57
+final_result  => min:38.07 (start 1999-04-01), max:861.32 (start 1984-07-02), avg:271.61
+avg_annual_return => min:2.17% (start 1999-04-01), max:16.29% (start 1984-07-02), avg:8.29%
+
+=== Approach: S&P500_RSI ===
+lowest_valley => min:-11.54 (start 2008-03-03), max:-0.01 (start 2002-07-01), avg:-2.02
+highest_peak  => min:5.37 (start 1987-04-01), max:22.05 (start 2010-06-01), avg:11.78
+final_result  => min:2.28 (start 1987-08-03), max:21.87 (start 2010-06-01), avg:10.53
+avg_annual_return => min:0.15% (start 1987-08-03), max:1.33% (start 2010-06-01), avg:0.66%
+
+=== Approach: S&P500_Momentum_Breakout ===
+lowest_valley => min:-1.03 (start 1981-01-02), max:-1.03 (start 2001-04-02), avg:-1.03
+highest_peak  => min:-0.00 (start 1980-01-02), max:-0.00 (start 1980-01-02), avg:-0.00
+final_result  => min:-1.03 (start 1981-01-02), max:-1.03 (start 2001-04-02), avg:-1.03
+avg_annual_return => min:-0.07% (start 1981-01-02), max:-0.07% (start 2001-04-02), avg:-0.07%
+
+=== Approach: NASDAQ_buyhold ===
+lowest_valley => min:-76.67 (start 2000-03-01), max:-0.03 (start 1980-05-01), avg:-23.24
+highest_peak  => min:6.16 (start 2000-03-01), max:1705.71 (start 1985-05-01), avg:637.18
+final_result  => min:3.90 (start 2000-03-01), max:1668.94 (start 1985-04-01), avg:388.11
+avg_annual_return => min:0.26% (start 2000-03-01), max:21.11% (start 1985-04-01), avg:10.12%
+
+=== Approach: NASDAQ_SMA_Trading ===
+lowest_valley => min:-75.54 (start 2000-01-03), max:-0.02 (start 1982-08-02), avg:-22.79
+highest_peak  => min:4.25 (start 2000-01-03), max:1549.12 (start 1985-04-01), avg:585.76
+final_result  => min:0.06 (start 2000-01-03), max:1519.64 (start 1985-04-01), avg:356.54
+avg_annual_return => min:0.00% (start 2000-01-03), max:20.40% (start 1985-04-01), avg:9.67%
+
+=== Approach: NASDAQ_adv_daytrading ===
+lowest_valley => min:-61.95 (start 2001-02-01), max:-0.03 (start 1997-07-01), avg:-13.87
+highest_peak  => min:121.60 (start 2001-02-01), max:2010.60 (start 1985-10-01), avg:780.45
+final_result  => min:77.76 (start 2001-02-01), max:1823.86 (start 1985-04-01), avg:621.54
+avg_annual_return => min:3.91% (start 2001-02-01), max:21.79% (start 1985-04-01), avg:13.56%
+
+=== Approach: NASDAQ_RSI ===
+lowest_valley => min:-18.32 (start 2000-08-01), max:-0.01 (start 2010-06-01), avg:-9.30
+highest_peak  => min:-0.00 (start 1980-01-02), max:21.59 (start 2008-10-01), avg:5.69
+final_result  => min:-11.14 (start 1994-01-03), max:19.67 (start 2009-02-02), avg:-1.80
+avg_annual_return => min:-0.78% (start 1994-01-03), max:1.20% (start 2009-02-02), avg:-0.14%
+
+=== Approach: NASDAQ_Momentum_Breakout ===
+lowest_valley => min:-1.03 (start 1981-01-02), max:-1.03 (start 2001-04-02), avg:-1.03
+highest_peak  => min:-0.00 (start 1980-01-02), max:-0.00 (start 1980-01-02), avg:-0.00
+final_result  => min:-1.03 (start 1981-01-02), max:-1.03 (start 2001-04-02), avg:-1.03
+avg_annual_return => min:-0.07% (start 1981-01-02), max:-0.07% (start 2001-04-02), avg:-0.07%
+
+Histogram saved to reports\Strategy_Sweep_1_15years_06202025\histogram.png

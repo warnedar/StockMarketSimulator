@@ -56,9 +56,9 @@ def advanced_daytrading(portfolio: Portfolio, date, price, day_index):
         # Initialize advanced parameters from portfolio.advanced_params if available, else use defaults.
         advanced_params = getattr(portfolio, "advanced_params", {})
         st["advanced_params"] = {
-            "trailing_stop_pct": advanced_params.get("trailing_stop_pct", 10.0),
-            "limit_buy_discount_pct": advanced_params.get("limit_buy_discount_pct", 5.0),
-            "pending_limit_days": advanced_params.get("pending_limit_days", 30)
+            "trailing_stop_pct": advanced_params.get("trailing_stop_pct", 11.0),
+            "limit_buy_discount_pct": advanced_params.get("limit_buy_discount_pct", 4.0),
+            "pending_limit_days": advanced_params.get("pending_limit_days", 37)
         }
         # Place initial market order to buy.
         o = Order(side='buy', order_type='market', quantity=None)

@@ -1,0 +1,21 @@
+# This config file sets up a 15-year investment window
+years=5
+
+# We'll do a 1-month step for our sweeps
+stepsize=1
+
+approach=S&P500_buyhold
+    ticker=^GSPC, strategy=buy_hold, spread=0.05, expense_ratio=0.03
+
+approach=NASDAQ_buyhold
+    ticker=^IXIC, strategy=buy_hold, spread=0.05, expense_ratio=0.2
+
+approach=NASDAQ_adv_daytrading
+    ticker=^IXIC, strategy=advanced_daytrading, spread=0.05, expense_ratio=0.2
+
+approach=QQQ_buyhold
+    ticker=QQQ, strategy=buy_hold, spread=0.05, expense_ratio=0.2
+
+approach=QQQ_adv_daytrading
+    ticker=QQQ, strategy=advanced_daytrading, spread=0.05, expense_ratio=0.2
+

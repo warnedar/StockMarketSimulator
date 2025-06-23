@@ -1,0 +1,6 @@
+Approach S&P500_buyhold => ERROR: "['Date' 'Open' 'High' 'Low' 'Close' 'Volume'] not in index"
+Approach NASDAQ_RSI => ERROR: "['Date' 'Open' 'High' 'Low' 'Close' 'Volume'] not in index"
+Approach NASDAQ_adv_daytrading => ERROR: "['Date' 'Open' 'High' 'Low' 'Close' 'Volume'] not in index"
+Approach S&P500_RSI => ERROR: "['Date' 'Open' 'High' 'Low' 'Close' 'Volume'] not in index"
+Approach NASDAQ_SMA_Trading => ERROR: "['Date' 'Open' 'High' 'Low' 'Close' 'Volume'] not in index"
+Approach S&P500_SMA_Trading => ERROR: "['Date' 'Open' 'High' 'Low' 'Close' 'Volume'] not in index"

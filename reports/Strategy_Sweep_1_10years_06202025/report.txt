@@ -1,0 +1,61 @@
+=== Approach: S&P500_buyhold ===
+lowest_valley => min:-56.35 (start 2007-10-01), max:-0.03 (start 1983-02-01), avg:-18.17
+highest_peak  => min:3.44 (start 2000-09-01), max:388.23 (start 1990-11-01), avg:171.24
+final_result  => min:-38.88 (start 1999-04-01), max:366.19 (start 1990-09-04), avg:143.88
+avg_annual_return => min:-4.80% (start 1999-04-01), max:16.64% (start 1990-09-04), avg:8.51%
+
+=== Approach: S&P500_SMA_Trading ===
+lowest_valley => min:-56.14 (start 2007-05-01), max:-0.02 (start 1985-09-03), avg:-18.11
+highest_peak  => min:3.46 (start 1999-12-01), max:378.37 (start 1990-09-04), avg:162.86
+final_result  => min:-43.78 (start 1999-03-01), max:375.16 (start 1990-09-04), avg:135.75
+avg_annual_return => min:-5.60% (start 1999-03-01), max:16.86% (start 1990-09-04), avg:8.13%
+
+=== Approach: S&P500_adv_daytrading ===
+lowest_valley => min:-51.11 (start 1999-07-01), max:-0.03 (start 1983-02-01), avg:-13.68
+highest_peak  => min:1.95 (start 1999-07-01), max:415.47 (start 1989-04-03), avg:180.15
+final_result  => min:-41.89 (start 1999-05-03), max:408.62 (start 1989-01-03), avg:148.08
+avg_annual_return => min:-5.28% (start 1999-05-03), max:17.66% (start 1989-01-03), avg:8.69%
+
+=== Approach: S&P500_RSI ===
+lowest_valley => min:-11.54 (start 2008-03-03), max:-0.01 (start 2002-07-01), avg:-1.83
+highest_peak  => min:0.87 (start 2000-12-01), max:16.69 (start 2011-11-01), avg:8.80
+final_result  => min:-1.51 (start 1986-08-01), max:16.69 (start 2011-11-01), avg:6.99
+avg_annual_return => min:-0.15% (start 1986-08-01), max:1.56% (start 2011-11-01), avg:0.67%
+
+=== Approach: S&P500_Momentum_Breakout ===
+lowest_valley => min:-0.69 (start 1986-04-01), max:-0.69 (start 2000-09-01), avg:-0.69
+highest_peak  => min:-0.00 (start 1980-01-02), max:-0.00 (start 1980-01-02), avg:-0.00
+final_result  => min:-0.69 (start 1986-04-01), max:-0.69 (start 2000-09-01), avg:-0.69
+avg_annual_return => min:-0.07% (start 1986-04-01), max:-0.07% (start 2000-09-01), avg:-0.07%
+
+=== Approach: NASDAQ_buyhold ===
+lowest_valley => min:-76.67 (start 2000-03-01), max:-0.03 (start 1980-05-01), avg:-20.87
+highest_peak  => min:-0.00 (start 2000-09-01), max:1397.59 (start 1990-11-01), avg:320.80
+final_result  => min:-53.25 (start 2000-03-01), max:997.28 (start 1990-09-04), avg:207.80
+avg_annual_return => min:-7.32% (start 2000-03-01), max:27.07% (start 1990-09-04), avg:10.54%
+
+=== Approach: NASDAQ_SMA_Trading ===
+lowest_valley => min:-75.54 (start 2000-01-03), max:-0.02 (start 1982-08-02), avg:-20.59
+highest_peak  => min:0.65 (start 2000-07-03), max:1221.59 (start 1990-09-04), avg:295.23
+final_result  => min:-53.28 (start 1999-12-01), max:1000.68 (start 1990-09-04), avg:192.35
+avg_annual_return => min:-7.33% (start 1999-12-01), max:27.11% (start 1990-09-04), avg:9.98%
+
+=== Approach: NASDAQ_adv_daytrading ===
+lowest_valley => min:-61.95 (start 2001-02-01), max:-0.03 (start 1997-07-01), avg:-12.74
+highest_peak  => min:13.79 (start 2001-02-01), max:1350.01 (start 1990-11-01), avg:361.95
+final_result  => min:1.38 (start 2000-09-01), max:1038.32 (start 1990-09-04), avg:286.43
+avg_annual_return => min:0.14% (start 2000-09-01), max:27.53% (start 1990-09-04), avg:13.66%
+
+=== Approach: NASDAQ_RSI ===
+lowest_valley => min:-18.32 (start 2000-08-01), max:-0.01 (start 2011-11-01), avg:-6.86
+highest_peak  => min:-0.00 (start 1980-01-02), max:18.23 (start 2009-02-02), avg:5.52
+final_result  => min:-15.57 (start 2000-09-01), max:17.60 (start 2008-10-01), avg:-0.53
+avg_annual_return => min:-1.68% (start 2000-09-01), max:1.63% (start 2008-10-01), avg:-0.08%
+
+=== Approach: NASDAQ_Momentum_Breakout ===
+lowest_valley => min:-0.69 (start 1986-04-01), max:-0.69 (start 2000-09-01), avg:-0.69
+highest_peak  => min:-0.00 (start 1980-01-02), max:-0.00 (start 1980-01-02), avg:-0.00
+final_result  => min:-0.69 (start 1986-04-01), max:-0.69 (start 2000-09-01), avg:-0.69
+avg_annual_return => min:-0.07% (start 1986-04-01), max:-0.07% (start 2000-09-01), avg:-0.07%
+
+Histogram saved to reports\Strategy_Sweep_1_10years_06202025\histogram.png

@@ -30,7 +30,8 @@ def main():
     ticker_info_dict = {
         ticker: {
             "strategy": STRATEGY_MAP["advanced_daytrading"],
-            "spread": 0.05  # example spread (percentage)
+            "spread": 0.05,  # example spread (percentage)
+            "expense_ratio": 0.2
             # Advanced parameters will be overridden in the grid search.
         }
     }
