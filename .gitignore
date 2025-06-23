@@ -3,3 +3,6 @@ __pycache__/
 .env
 *.egg-info/
 reports/
+# Ignore merge utility artifacts
+merge.js
+merged.txt
