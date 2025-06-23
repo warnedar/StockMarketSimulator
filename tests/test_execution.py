@@ -1,24 +1,7 @@
-import os
-import sys
-import types
 import pytest
 
-# Add repo root to path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-# Create alias package so modules using the full name work
-if "stock_market_simulator" not in sys.modules:
-    pkg = types.ModuleType("stock_market_simulator")
-    pkg.__path__ = [os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))]
-    sys.modules["stock_market_simulator"] = pkg
-
-import simulation
-sys.modules["stock_market_simulator.simulation"] = simulation
-import simulation.portfolio as pf_module
-sys.modules["stock_market_simulator.simulation.portfolio"] = pf_module
-
-from simulation.portfolio import Portfolio, Order
-from simulation.execution import execute_orders
+from stock_market_simulator.simulation.portfolio import Portfolio, Order
+from stock_market_simulator.simulation.execution import execute_orders
 
 
 def test_execute_orders_market_limit_trailing():

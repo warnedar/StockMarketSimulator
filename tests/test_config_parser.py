@@ -1,14 +1,4 @@
-import os
-import sys
-import types
 import pytest
-
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, ROOT_DIR)
-if 'stock_market_simulator' not in sys.modules:
-    pkg = types.ModuleType('stock_market_simulator')
-    pkg.__path__ = [ROOT_DIR]
-    sys.modules['stock_market_simulator'] = pkg
 
 from stock_market_simulator.utils.config_parser import parse_config_file
 from stock_market_simulator.strategies.base_strategies import STRATEGY_MAP

@@ -1,17 +1,5 @@
-import os
-import sys
-import types
-
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, project_root)
-
-# Alias package name used inside the strategy files
-pkg = types.ModuleType("stock_market_simulator")
-pkg.__path__ = [project_root]
-sys.modules.setdefault("stock_market_simulator", pkg)
-
-from simulation.portfolio import Portfolio
-from strategies.sma_trading_strategy import sma_trading_strategy
+from stock_market_simulator.simulation.portfolio import Portfolio
+from stock_market_simulator.strategies.sma_trading_strategy import sma_trading_strategy
 
 
 def _feed_prices(prices, portfolio):
