@@ -80,8 +80,17 @@ Date,Open,High,Low,Close,Volume
 ```
 
 If you previously ran the simulator with older versions of the code you may
-have CSV files with different headers.  You can safely delete the old files to
-force fresh downloads or convert them to the new format before running.
+have CSV files with different headers.  Delete any outdated CSVs when
+upgrading so the loader can refresh them.  Cached files in both
+`data/local_csv/` and `gui/data/local_csv/` must start with the header line
+
+```
+Date,Open,High,Low,Close,Volume
+```
+
+See `data/CSV_FORMAT.md` for details.  If legacy files exist, use the
+conversion script from the previous task or remove them to trigger fresh
+downloads.
 
 ## License
 This project is provided for educational purposes and comes with no warranty.
