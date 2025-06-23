@@ -107,8 +107,7 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
             if header_cols != EXPECTED_COLUMNS:
                 print(f"[WARNING] Unexpected columns in {csv_filename}; redownloading.")
                 df = _safe_download(ticker, start_date)
-                if not df.empty:
-                    df.to_csv(local_csv_path, columns=EXPECTED_COLUMNS)
+                df.to_csv(local_csv_path, columns=EXPECTED_COLUMNS)
             else:
                 df = pd.read_csv(
                     local_csv_path,
@@ -148,12 +147,13 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
     if df is None or df.empty:
         raise ValueError(f"No data found for ticker: {ticker}")
 
-    if 'Close' not in df.columns:
-        raise ValueError(f"Missing 'Close' in DataFrame for {ticker}")
+    missing_cols = [c for c in EXPECTED_COLUMNS[1:] if c not in df.columns]
+    if missing_cols:
+        raise ValueError(f"Missing columns {missing_cols} in DataFrame for {ticker}")
 
-    # Keep only 'Close', drop NaNs, and sort the DataFrame by date
-    df = df[['Close']].copy()
-    df.dropna(inplace=True)
+    # Keep only the expected OHLCV columns, drop rows with NaN Close, and sort
+    df = df[EXPECTED_COLUMNS[1:]].copy()
+    df.dropna(subset=['Close'], inplace=True)
     df.sort_index(inplace=True)
 
     _data_cache[ticker] = df
