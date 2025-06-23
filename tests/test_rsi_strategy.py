@@ -1,20 +1,6 @@
-import os
-import sys
-import types
-
 import pytest
-
-# Add project root to path
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, ROOT_DIR)
-
-# Create a package alias so modules expecting 'stock_market_simulator' can be imported
-pkg = types.ModuleType("stock_market_simulator")
-pkg.__path__ = [ROOT_DIR]
-sys.modules.setdefault("stock_market_simulator", pkg)
-
-from strategies import rsi_strategy
-from simulation.portfolio import Portfolio
+from stock_market_simulator.strategies import rsi_strategy
+from stock_market_simulator.simulation.portfolio import Portfolio
 
 
 def test_compute_rsi_manual():
