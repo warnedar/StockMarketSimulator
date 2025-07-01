@@ -20,10 +20,10 @@ locally so repeated runs are fast.
   the config, console log and all generated plots.
 
 ## Requirements
-Install the package along with its dependencies using:
+Install the Python dependencies via:
 
 ```bash
-pip install -e .
+pip install -r requirements.txt
 ```
 
 The simulator relies on `pandas`, `yfinance`, `matplotlib` and `fpdf`.

@@ -1,8 +1,3 @@
-__pycache__/
-*.py[cod]
-.env
-*.egg-info/
-reports/
 # Ignore merge utility artifacts
 merge.js
 merged.txt

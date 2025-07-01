@@ -1,3 +1,5 @@
+import os
+import sys
 from datetime import datetime as dt
 
 import pytest
@@ -5,7 +7,9 @@ import pytest
 pd = pytest.importorskip("pandas")
 
 
-from stock_market_simulator.data import data_fetcher
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from data import data_fetcher
 
 
 def _make_df():

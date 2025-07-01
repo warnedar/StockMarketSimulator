@@ -1,5 +1,8 @@
+import os
 import sys
 import types
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Provide a dummy fpdf module before importing pdf_report
 class DummyPDF:
@@ -30,7 +33,7 @@ class DummyPDF:
 dummy_module = types.SimpleNamespace(FPDF=DummyPDF)
 sys.modules.setdefault("fpdf", dummy_module)
 
-from stock_market_simulator.utils import pdf_report
+from utils import pdf_report
 
 
 def test_create_pdf_report(tmp_path, monkeypatch):

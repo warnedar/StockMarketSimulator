@@ -1,5 +1,10 @@
+import os
+import sys
 import csv
-from stock_market_simulator.utils.cleanup_cache import _process_dir, EXPECTED_HEADER
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from utils.cleanup_cache import _process_dir, EXPECTED_HEADER
 
 
 def _write_csv(path, header):
