@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from io import StringIO
 from collections import defaultdict
 
+from config import DEFAULT_CASH, REPORTS_DIR
 from stock_market_simulator.utils.config_parser import parse_config_file
 from stock_market_simulator.data.data_fetcher import load_historical_data
 from stock_market_simulator.simulation.simulator import run_configured_sweep
@@ -17,7 +18,7 @@ def run_approach(aname, ticker_strat_dict, years, stepsize):
     """Run one simulation approach in a separate process."""
     needed = set(ticker_strat_dict.keys())
     all_dfs = {tk: load_historical_data(tk) for tk in needed}
-    return run_configured_sweep(all_dfs, aname, ticker_strat_dict, years, stepsize, 10000.0)
+    return run_configured_sweep(all_dfs, aname, ticker_strat_dict, years, stepsize, DEFAULT_CASH)
 
 def generate_boxplots(approach_data, output_dir, out_name):
     """
@@ -104,7 +105,7 @@ def main():
     out_name = sys.argv[2]
     workers = int(sys.argv[3]) if len(sys.argv) >= 4 else (os.cpu_count() or 1)
 
-    base_dir = "reports"
+    base_dir = REPORTS_DIR
     out_dir = os.path.join(base_dir, out_name)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
