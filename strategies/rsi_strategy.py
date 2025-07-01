@@ -14,7 +14,7 @@ The strategy maintains its own price history and order timing in portfolio.strat
 
 from stock_market_simulator.simulation.portfolio import Order, Portfolio
 
-def compute_rsi(prices, period=14):
+def compute_rsi(prices: list[float], period: int = 14) -> float | None:
     """
     Compute the Relative Strength Index (RSI) for a list of prices.
 
@@ -41,7 +41,8 @@ def compute_rsi(prices, period=14):
     rsi = 100 - (100 / (1 + rs))
     return rsi
 
-def rsi_strategy(portfolio: Portfolio, date, price, day_index):
+def rsi_strategy(portfolio: Portfolio, date, price: float, day_index: int) -> None:
+    """Trading strategy based on the Relative Strength Index (RSI)."""
     state = portfolio.strategy_state
     if "price_history" not in state:
         state["price_history"] = []
