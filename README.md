@@ -14,7 +14,7 @@ locally so repeated runs are fast.
   `data/local_csv` and automatically updated when new data is available.
 - **Parameter optimization** – `run_optimization.py` can sweep advanced day
   trading parameters to find combinations with the best performance metric.
-- **GUI** – a Tkinter interface in `gui/visualizer.py` lets you run simulations
+- **GUI** – a Tkinter interface in `src/stock_market_simulator/gui/visualizer.py` lets you run simulations
   interactively and view the resulting equity curves.
 - **Automatic PDF summaries** – results folders include a single PDF combining
   the config, console log and all generated plots.
@@ -45,10 +45,11 @@ Results are written to `reports/my_report/` including plots, a `report.txt`
 with detailed statistics and a consolidated `report.pdf`.
 
 ### GUI
-To explore strategies interactively, launch the visualizer:
+To explore strategies interactively, launch the visualizer using the
+`sms-gui` command installed with the project:
 
 ```bash
-python -m stock_market_simulator.gui.visualizer
+sms-gui
 ```
 
 Select a config file, choose the approaches to simulate and set the start date
@@ -77,7 +78,7 @@ worker-count argument, resulting in a warning.
 ## Repository Layout
 - `config/` – sample configuration files.
 - `data/` – historical data loader and local CSV cache.
-- `gui/` – Tkinter visualizer for running single simulations.
+- `src/stock_market_simulator/gui/` – Tkinter visualizer for running single simulations.
 - `optimization/` – utilities for parameter sweeps.
 - `simulation/` – core portfolio and execution logic.
 - `strategies/` – trading strategy implementations.
@@ -93,7 +94,7 @@ Date,Open,High,Low,Close,Volume
 If you previously ran the simulator with older versions of the code you may
 have CSV files with different headers.  Delete any outdated CSVs when
 upgrading so the loader can refresh them.  Cached files in both
-`data/local_csv/` and `gui/data/local_csv/` must start with the header line
+`data/local_csv/` and `src/stock_market_simulator/gui/data/local_csv/` must start with the header line
 
 ```
 Date,Open,High,Low,Close,Volume

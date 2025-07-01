@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+from stock_market_simulator.gui.visualizer import SimulatorVisualizer
+
+
+def main():
+    app = SimulatorVisualizer()
+    app.mainloop()
+
+
+if __name__ == "__main__":
+    main()
