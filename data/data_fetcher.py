@@ -2,6 +2,7 @@
 
 import os
 from datetime import datetime
+import logging
 
 import pandas as pd
 import yfinance as yf
@@ -12,6 +13,10 @@ EXPECTED_COLUMNS = ["Date", "Open", "High", "Low", "Close", "Volume"]
 
 # In-memory cache to avoid redundant downloads during a single run
 _data_cache = {}
+
+# Module level logger
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 
 def _safe_download(ticker: str, start: str) -> pd.DataFrame:
@@ -35,20 +40,20 @@ def _safe_download(ticker: str, start: str) -> pd.DataFrame:
                     auto_adjust=False,
                 )
             except Exception as e:
-                print(f"[WARNING] yf.download failed for {ticker}: {e}")
+                logger.warning("yf.download failed for %s: %s", ticker, e)
                 df = pd.DataFrame()
         else:
-            print(f"[WARNING] yf.download failed for {ticker}: {te}")
+            logger.warning("yf.download failed for %s: %s", ticker, te)
             df = pd.DataFrame()
     except Exception as e:
-        print(f"[WARNING] yf.download failed for {ticker}: {e}")
+        logger.warning("yf.download failed for %s: %s", ticker, e)
         df = pd.DataFrame()
 
     if df.empty:
         try:
             df = yf.Ticker(ticker).history(start=start, auto_adjust=False)
         except Exception as e:
-            print(f"[ERROR] history() failed for {ticker}: {e}")
+            logger.error("history() failed for %s: %s", ticker, e)
             df = pd.DataFrame()
 
     if not df.empty:
@@ -80,7 +85,7 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
     """
     global _data_cache
     if ticker in _data_cache:
-        print(f"[CACHE HIT] {ticker} in-memory.")
+        logger.info("[CACHE HIT] %s in-memory.", ticker)
         return _data_cache[ticker]
 
     # Ensure the local data directory exists
@@ -98,14 +103,14 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
         # Re-check cache after acquiring the lock in case another thread
         # loaded the data while we were waiting.
         if ticker in _data_cache:
-            print(f"[CACHE HIT] {ticker} in-memory (after lock).")
+            logger.info("[CACHE HIT] %s in-memory (after lock).", ticker)
             return _data_cache[ticker]
 
         if os.path.exists(local_csv_path):
-            print(f"[LOCAL CSV] Loading {ticker} from {local_csv_path}")
+            logger.info("[LOCAL CSV] Loading %s from %s", ticker, local_csv_path)
             header_cols = list(pd.read_csv(local_csv_path, nrows=0).columns)
             if header_cols != EXPECTED_COLUMNS:
-                print(f"[WARNING] Unexpected columns in {csv_filename}; redownloading.")
+                logger.warning("Unexpected columns in %s; redownloading.", csv_filename)
                 df = _safe_download(ticker, start_date)
                 df.reset_index()[EXPECTED_COLUMNS].to_csv(
                     local_csv_path, index=False
@@ -121,7 +126,7 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
                 df.sort_index(inplace=True)
 
         if df.empty:
-            print(f"[YAHOO] Downloading {ticker} from {start_date}")
+            logger.info("[YAHOO] Downloading %s from %s", ticker, start_date)
             df = _safe_download(ticker, start_date)
             if not df.empty:
                 df.reset_index()[EXPECTED_COLUMNS].to_csv(
@@ -132,8 +137,11 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
             new_start_date = (last_date + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
             today_str = datetime.today().strftime("%Y-%m-%d")
             if new_start_date < today_str:
-                print(
-                    f"[UPDATE] Checking for new data for {ticker} from {new_start_date} to {today_str}"
+                logger.info(
+                    "[UPDATE] Checking for new data for %s from %s to %s",
+                    ticker,
+                    new_start_date,
+                    today_str,
                 )
                 new_df = _safe_download(ticker, new_start_date)
                 if not new_df.empty:
@@ -143,10 +151,12 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
                     df.reset_index()[EXPECTED_COLUMNS].to_csv(
                         local_csv_path, index=False
                     )
-                    print(f"[UPDATE] CSV for {ticker} updated with new data.")
+                    logger.info("[UPDATE] CSV for %s updated with new data.", ticker)
                 else:
-                    print(
-                        f"[UPDATE] No new data available for {ticker} after {last_date.date()}."
+                    logger.info(
+                        "[UPDATE] No new data available for %s after %s.",
+                        ticker,
+                        last_date.date(),
                     )
 
 

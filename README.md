@@ -37,6 +37,13 @@ strategies.  Example:
 python -m stock_market_simulator.main config/configA.txt my_report
 ```
 
+The `main` module now supports a `--log-level` option to control
+logging verbosity. For example, to see debug messages:
+
+```bash
+python -m stock_market_simulator.main config/configA.txt my_report --log-level DEBUG
+```
+
 Each `ticker=` line can optionally include `spread` (bid/ask percentage) and
 `expense_ratio` (annual fee percentage).  The expense ratio is deducted daily
 during simulation.
