@@ -85,3 +85,57 @@ def test_uses_local_csv_without_downloading(tmp_path, monkeypatch):
     csv_path = tmp_path / "TEST.csv"
     assert csv_path.exists()
     assert list(result.columns) == [c for c in data_fetcher.EXPECTED_COLUMNS if c != "Date"]
+
+
+def test_update_ignores_empty_rows(tmp_path, monkeypatch):
+    """Ensure that rows with no market data are not written to the CSV when updating."""
+    data_fetcher._data_cache.clear()
+
+    # Initial download to create CSV with three days of data
+    df = _make_df()
+    monkeypatch.setattr(data_fetcher, "_safe_download", lambda t, s: df.copy())
+    data_fetcher.load_historical_data(
+        "TEST", start_date="2020-01-01", local_data_dir=str(tmp_path)
+    )
+
+    # Clear cache to force reloading from disk and trigger update path
+    data_fetcher._data_cache.clear()
+
+    class DummyDateTime:
+        @staticmethod
+        def today():
+            return dt(2020, 1, 6)
+
+    monkeypatch.setattr(data_fetcher, "datetime", DummyDateTime)
+
+    # New data includes a placeholder row (all NaN) followed by a real row
+    dates = pd.to_datetime(["2020-01-04", "2020-01-05"])
+    new_df = pd.DataFrame(
+        {
+            "Open": [pd.NA, 4],
+            "High": [pd.NA, 4],
+            "Low": [pd.NA, 4],
+            "Close": [pd.NA, 4],
+            "Volume": [pd.NA, 400],
+        },
+        index=dates,
+    )
+    new_df.index.name = "Date"
+
+    monkeypatch.setattr(data_fetcher, "_safe_download", lambda t, s: new_df.copy())
+
+    result = data_fetcher.load_historical_data(
+        "TEST", start_date="2020-01-01", local_data_dir=str(tmp_path)
+    )
+
+    # The returned DataFrame should only contain four rows (Jan 1-3 and Jan 5)
+    expected_dates = pd.to_datetime(
+        ["2020-01-01", "2020-01-02", "2020-01-03", "2020-01-05"]
+    )
+    assert list(result.index) == list(expected_dates)
+
+    # The CSV on disk should not contain any NaN rows
+    csv_path = tmp_path / "TEST.csv"
+    csv_df = pd.read_csv(csv_path)
+    assert csv_df["Close"].isna().sum() == 0
+    assert len(csv_df) == 4
