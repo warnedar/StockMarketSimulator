@@ -1,3 +1,10 @@
+"""Combine text and plots into a single PDF report.
+
+Many command line runs generate a collection of PNG plots along with a
+``config.txt`` and ``report.txt`` file.  This module stitches those assets
+together into a standalone ``report.pdf`` that is easy to share.
+"""
+
 import os
 import glob
 from fpdf import FPDF

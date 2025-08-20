@@ -27,6 +27,9 @@ def compute_rsi(prices, period=14):
     losses = []
     for i in range(1, period + 1):
         change = prices[-i] - prices[-i-1]
+        # Separate positive and negative moves.  This explicit loop avoids
+        # dependencies on pandas for clarity and keeps the function fast for the
+        # small window sizes typically used with RSI.
         if change > 0:
             gains.append(change)
             losses.append(0)

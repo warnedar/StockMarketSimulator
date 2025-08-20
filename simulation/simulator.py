@@ -1,17 +1,34 @@
-# stock_market_simulator/simulation/simulator.py
+"""Core simulation routines for the stock market simulator.
+
+This module contains two layers:
+
+* :class:`HybridMultiFundPortfolio` – a lightweight container that splits the
+  initial cash between multiple tickers and associates a strategy function with
+  each.  It's "hybrid" because it combines several *funds* (one per ticker) into
+  a single portfolio to produce an aggregate history.
+* High-level functions such as :func:`run_configured_sweep` which orchestrate
+  multiple subrange simulations and compute summary statistics.
+
+The design aims to stay agnostic of individual strategies; they interact with
+their sub-portfolios via the shared :class:`Portfolio` and :mod:`execution`
+APIs.
+"""
 
 import pandas as pd
 from stock_market_simulator.simulation.portfolio import Portfolio
 from stock_market_simulator.simulation.execution import execute_orders
 
+
 class HybridMultiFundPortfolio:
+    """Container for per-ticker sub-portfolios.
+
+    Strategies operate independently on each ticker's sub-portfolio.  The class
+    manages the initial cash split and stores a history of aggregate percent
+    returns which the simulator later returns to callers.
     """
-    Combines multiple sub-portfolios (one per ticker),
-    each with its own strategy and slice of the total cash.
-    """
+
     def __init__(self, ticker_info_dict: dict, initial_cash=10000.0):
-        # ticker_info_dict is a mapping: ticker -> { "strategy": strategy_func, "spread": spread (as percentage),
-        #     optionally "trailing_stop_pct", "limit_buy_discount_pct", "pending_limit_days" }
+        # ``ticker_info_dict`` maps ticker -> {"strategy": func, "spread": pct, ...}
         self.initial_cash = initial_cash
         self.tickers = list(ticker_info_dict.keys())
         self.sub_portfolios = []
@@ -38,9 +55,8 @@ class HybridMultiFundPortfolio:
         self.history = []
 
     def total_value(self, day_prices: dict) -> float:
-        """
-        Computes total portfolio value given a dict of day_prices.
-        """
+        """Compute total portfolio value given a dict of day prices."""
+
         tv = 0.0
         for (sym, pf) in self.sub_portfolios:
             px = day_prices.get(sym, 0.0)
@@ -48,10 +64,24 @@ class HybridMultiFundPortfolio:
         return tv
 
 def run_hybrid_multi_fund(dfs_dict, hybrid_pf: HybridMultiFundPortfolio):
+    """Run a simulation over the provided historical data.
+
+    Parameters
+    ----------
+    dfs_dict:
+        Mapping ticker -> DataFrame of price data.
+    hybrid_pf:
+        Instance of :class:`HybridMultiFundPortfolio` describing strategies and
+        initial allocations.
+
+    Returns
+    -------
+    history_percent_gains:
+        List of percent gains relative to initial capital for each trading day.
+    final_index:
+        :class:`pandas.DatetimeIndex` of the simulation dates.
     """
-    Given a dict {ticker: DataFrame}, run day-by-day simulation.
-    Returns (history_percent_gains, final_index).
-    """
+
     tickers = hybrid_pf.tickers
     main_tk = tickers[0]
     final_index = dfs_dict[main_tk].index
@@ -71,8 +101,10 @@ def run_hybrid_multi_fund(dfs_dict, hybrid_pf: HybridMultiFundPortfolio):
             cur_price = day_prices[sym]
             execute_orders(cur_price, pf, day_i)
             strategy_func = hybrid_pf.strategies_for_tickers[sym]
+            # Strategy functions are responsible for adding orders to the
+            # portfolio; they operate on their own sub-portfolio only.
             strategy_func(pf, dt, cur_price, day_i)
-            # Deduct daily expense ratio fee
+            # Deduct daily expense ratio fee to simulate management costs.
             daily_fee = pf.total_value(cur_price) * (pf.expense_ratio / 100.0) / 365.0
             pf.cash -= daily_fee
 
@@ -83,9 +115,8 @@ def run_hybrid_multi_fund(dfs_dict, hybrid_pf: HybridMultiFundPortfolio):
     return hybrid_pf.history, final_index
 
 def intersect_all_indexes(dfs_dict):
-    """
-    Intersect indexes among all DataFrames to ensure alignment.
-    """
+    """Intersect indexes among all DataFrames to ensure alignment."""
+
     all_idx = [df.index for df in dfs_dict.values()]
     if not all_idx:
         raise ValueError("No DataFrames to intersect!")
@@ -95,9 +126,8 @@ def intersect_all_indexes(dfs_dict):
     return common.sort_values()
 
 def find_monthly_starts_first_open(common_idx):
-    """
-    For a given DateTimeIndex, find the first open date of each month.
-    """
+    """For a given DateTimeIndex, find the first open date of each month."""
+
     by_ym = {}
     for dt in common_idx:
         ym = (dt.year, dt.month)
@@ -108,10 +138,16 @@ def find_monthly_starts_first_open(common_idx):
     return monthly_starts
 
 def run_configured_sweep(dfs_dict, approach_name, ticker_info_dict, years, stepsize, initial_cash=10000.0):
+    """Run multiple subrange simulations and compute metrics.
+
+    The config file defines an "approach" as a combination of strategies and
+    tickers.  For robust statistics we simulate multiple overlapping windows of
+    length ``years`` starting at monthly intervals (controlled by ``stepsize``).
+    ``results_list`` contains tuples ``(lowest_valley, highest_peak, final_return,
+    cagr, start_date)`` for each run and is later summarised into a dictionary of
+    metrics.
     """
-    Runs multiple subrange simulations, each lasting `years` years,
-    and computes performance metrics.
-    """
+
     common_idx = intersect_all_indexes(dfs_dict)
     if common_idx.empty:
         raise ValueError(f"No intersection for approach {approach_name}.")

@@ -1,3 +1,11 @@
+"""Utilities for summarising optimisation results as a PDF report.
+
+The optimisation sweep produces a nested dictionary of metrics.  This module
+turns that data into a human-readable multi-page PDF containing text summaries,
+box plots and heatmaps.  ``matplotlib`` is used for rendering and the built-in
+``PdfPages`` backend writes the final file.
+"""
+
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
