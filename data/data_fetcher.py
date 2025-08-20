@@ -124,7 +124,11 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
                 # version of the project.  Redownload to avoid subtle bugs.
                 print(f"[WARNING] Unexpected columns in {csv_filename}; redownloading.")
                 df = _safe_download(ticker, start_date)
-                df.reset_index()[EXPECTED_COLUMNS].to_csv(local_csv_path, index=False)
+                if not df.empty:
+                    # Drop rows without a valid closing price before persisting
+                    df.dropna(subset=["Close"], inplace=True)
+                if not df.empty:
+                    df.reset_index()[EXPECTED_COLUMNS].to_csv(local_csv_path, index=False)
             else:
                 df = pd.read_csv(
                     local_csv_path,
@@ -134,10 +138,15 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
                 df.index = pd.to_datetime(df.index, errors="coerce")
                 df = df[~df.index.isna()]
                 df.sort_index(inplace=True)
+                # Remove any placeholder rows that may have been written by older runs
+                df.dropna(subset=["Close"], inplace=True)
 
         if df.empty:
             print(f"[YAHOO] Downloading {ticker} from {start_date}")
             df = _safe_download(ticker, start_date)
+            if not df.empty:
+                # Remove rows that lack market data before caching locally
+                df.dropna(subset=["Close"], inplace=True)
             if not df.empty:
                 df.reset_index()[EXPECTED_COLUMNS].to_csv(local_csv_path, index=False)
         else:
@@ -148,11 +157,16 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
                 print(f"[UPDATE] Checking for new data for {ticker} from {new_start_date} to {today_str}")
                 new_df = _safe_download(ticker, new_start_date)
                 if not new_df.empty:
+                    # Discard rows with missing prices which can appear when the
+                    # requested range spans non-trading days.
+                    new_df.dropna(subset=["Close"], inplace=True)
+                if not new_df.empty:
                     # Append new rows, drop duplicates (some feeds backfill) and
                     # then persist the extended CSV.
                     df = pd.concat([df, new_df])
                     df = df[~df.index.duplicated(keep='last')]
                     df.sort_index(inplace=True)
+                    df.dropna(subset=["Close"], inplace=True)
                     df.reset_index()[EXPECTED_COLUMNS].to_csv(local_csv_path, index=False)
                     print(f"[UPDATE] CSV for {ticker} updated with new data.")
                 else:
