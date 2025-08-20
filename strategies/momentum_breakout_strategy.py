@@ -27,9 +27,10 @@ def momentum_breakout_strategy(portfolio: Portfolio, date, price, day_index):
     history = state["price_history"]
 
     window = 10
-    # Use the previous `window` days to determine breakout/breakdown levels.
+    # Use the previous ``window`` days to determine breakout/breakdown levels.
     # We only append the current price after evaluating the conditions so that
-    # today's price does not influence the threshold calculations.
+    # today's price does not influence the threshold calculations.  This mirrors
+    # how many technical traders would operate using yesterday's closing data.
     if len(history) < window:
         history.append(price)
         return

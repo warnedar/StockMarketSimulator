@@ -26,6 +26,7 @@ def sma_trading_strategy(portfolio: Portfolio, date, price, day_index):
     history.append(price)
 
     if len(history) < 50:
+        # Need at least 50 data points to compute both moving averages.
         return
 
     sma_20 = sum(history[-20:]) / 20.0
@@ -36,7 +37,9 @@ def sma_trading_strategy(portfolio: Portfolio, date, price, day_index):
     days_since_buy = day_index - last_buy_day
     days_since_sell = day_index - last_sell_day
 
-    # BUY Condition
+    # BUY when the short-term average crosses above the long-term average.  The
+    # one-day cooldown avoids rapid flip-flopping if prices oscillate around the
+    # crossover point.
     if sma_20 > sma_50 and days_since_buy >= 1:
         quantity_to_buy = (portfolio.cash * 0.20) / price
         if quantity_to_buy > 0:
@@ -45,7 +48,8 @@ def sma_trading_strategy(portfolio: Portfolio, date, price, day_index):
             portfolio.orders.append(order)
             state["last_buy_day"] = day_index
 
-    # SELL Condition
+    # SELL after a 10% run-up over the 20-day average with a small cooldown to
+    # avoid reacting to tiny spikes.
     if price > 1.1 * sma_20 and days_since_sell >= 3:
         quantity_to_sell = portfolio.shares * 0.50
         if quantity_to_sell > 0:

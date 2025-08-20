@@ -1,5 +1,15 @@
 # stock_market_simulator/optimization/parameter_sweeper.py
 
+"""Grid-search utilities for optimising strategy parameters.
+
+The functions in this module perform exhaustive parameter sweeps for the
+``advanced_daytrading`` strategy.  The optimisation is CPU intensive, therefore
+the code uses :class:`concurrent.futures.ProcessPoolExecutor` with an
+initialisation step that shares large read-only data structures via global
+variables.  This avoids repeatedly pickling the historical price DataFrames for
+each task.
+"""
+
 import itertools
 import concurrent.futures
 import os
@@ -10,12 +20,12 @@ from stock_market_simulator.simulation.simulator import (
     run_hybrid_multi_fund,
     intersect_all_indexes,
     find_monthly_starts_first_open,
-    HybridMultiFundPortfolio
+    HybridMultiFundPortfolio,
 )
 
-# Shared data loaded once per worker. These globals are populated by
-# the process pool initializer to avoid repeatedly sending large
-# DataFrames to every task.
+# Shared data loaded once per worker.  These globals are populated by the
+# process pool initializer to avoid repeatedly sending large DataFrames to every
+# task.
 _DFS_DICT = None
 _TICKER_INFO_DICT = None
 

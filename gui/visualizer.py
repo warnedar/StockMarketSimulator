@@ -1,4 +1,15 @@
-# stock_market_simulator/gui/visualizer.py
+"""Tkinter GUI for exploring simulation strategies interactively.
+
+The command line tools are well suited for batch runs, but sometimes it is more
+convenient to experiment with a single start date and set of strategies.  This
+module provides a minimal graphical interface where a user can load a config
+file, select approaches and visualise the resulting equity curves.
+
+Tkinter is used for portability.  Matplotlib plots are embedded directly into
+the window so no external viewers are required.  Historical data is cached in
+``dfs_cache`` to avoid re-fetching when different strategies share the same
+ticker.
+"""
 
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -21,14 +32,19 @@ class SimulatorVisualizer(tk.Tk):
         self.title("Strategy Sweep Visualizer")
         self.geometry("900x700")
 
+        # Track the loaded configuration and any historical data we have fetched
+        # so far.  ``config_data`` is a tuple (years, stepsize, approaches)
+        # identical to the output of :func:`parse_config_file`.
         self.config_file_path = None
-        self.config_data = None  # (years, stepsize, approaches)
+        self.config_data = None
         self.dfs_cache = {}  # Cache: ticker -> DataFrame
 
         self.create_widgets()
 
     def create_widgets(self):
-        # Top frame: Config file selection and approach list.
+        # Top frame: Config file selection and approach list.  Having two frames
+        # keeps layout code readable and allows the listbox to expand as the
+        # window is resized.
         frame_top = tk.Frame(self)
         frame_top.pack(side=tk.TOP, fill=tk.X, padx=10, pady=10)
 
@@ -43,6 +59,8 @@ class SimulatorVisualizer(tk.Tk):
         frame_approaches.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=10, pady=5)
 
         tk.Label(frame_approaches, text="Select Approaches:").pack(anchor=tk.W)
+        # MULTIPLE selection allows the user to plot several strategies on the
+        # same axes for quick visual comparison.
         self.lst_approaches = tk.Listbox(frame_approaches, selectmode=tk.MULTIPLE, height=6)
         self.lst_approaches.pack(fill=tk.BOTH, expand=True)
 
@@ -63,6 +81,7 @@ class SimulatorVisualizer(tk.Tk):
         self.entry_cash.grid(row=2, column=1, padx=5)
         self.entry_cash.insert(0, "10000")
 
+        # Trigger the simulation using whatever approaches are selected above.
         btn_run = tk.Button(frame_params, text="Run Simulation", command=self.run_simulation)
         btn_run.grid(row=3, column=0, columnspan=2, pady=10)
 
@@ -78,7 +97,9 @@ class SimulatorVisualizer(tk.Tk):
             try:
                 self.config_data = parse_config_file(file_path)
                 self.lbl_config.config(text=f"Loaded config: {os.path.basename(file_path)}")
-                # Populate approaches listbox.
+                # Populate approaches listbox.  Only the approach names are
+                # displayed; ticker details are pulled from ``config_data`` when
+                # the simulation runs.
                 self.lst_approaches.delete(0, tk.END)
                 _, _, approaches = self.config_data
                 for approach_name, ticker_info in approaches:
@@ -135,8 +156,11 @@ class SimulatorVisualizer(tk.Tk):
             if not dfs_dict:
                 continue
             try:
-                history, final_index = run_simulation(ticker_info_dict, dfs_dict, start_date, window_years,
-                                                      initial_cash)
+                # ``run_simulation`` returns the percent-return history and the
+                # associated DateTimeIndex which we plot directly.
+                history, final_index = run_simulation(
+                    ticker_info_dict, dfs_dict, start_date, window_years, initial_cash
+                )
                 self.ax.plot(final_index, history, label=approach_name)
             except Exception as e:
                 messagebox.showerror("Simulation Error", f"Approach {approach_name} failed: {e}")

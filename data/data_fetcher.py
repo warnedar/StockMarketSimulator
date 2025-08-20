@@ -1,4 +1,15 @@
-# stock_market_simulator/data/data_fetcher.py
+"""Utility for retrieving and caching historical price data.
+
+The simulator needs reliable OHLCV data for each ticker.  To keep repeated runs
+fast and deterministic this module caches downloads in ``data/local_csv`` and
+uses a simple in-memory cache for intra-process reuse.  The local CSV format is
+kept deliberately strict to avoid surprises: if a file's columns deviate from
+``EXPECTED_COLUMNS`` the data is redownloaded to ensure consistency across
+machines and library versions.
+
+A :class:`filelock.FileLock` is used to guard concurrent access so multiple
+processes can safely load or update the same cache file.
+"""
 
 import os
 from datetime import datetime
@@ -10,7 +21,9 @@ from filelock import FileLock
 # Expected column order for all cached CSVs
 EXPECTED_COLUMNS = ["Date", "Open", "High", "Low", "Close", "Volume"]
 
-# In-memory cache to avoid redundant downloads during a single run
+# In-memory cache to avoid redundant downloads during a single run.  This keeps
+# repeated calls to :func:`load_historical_data` lightweight when several
+# strategies operate on the same ticker in one simulation sweep.
 _data_cache = {}
 
 
@@ -80,6 +93,7 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
     """
     global _data_cache
     if ticker in _data_cache:
+        # Quick exit when data has already been loaded earlier in the process.
         print(f"[CACHE HIT] {ticker} in-memory.")
         return _data_cache[ticker]
 
@@ -95,8 +109,9 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
 
     lock_path = f"{local_csv_path}.lock"
     with FileLock(lock_path):
-        # Re-check cache after acquiring the lock in case another thread
-        # loaded the data while we were waiting.
+        # Re-check cache after acquiring the lock in case another thread or
+        # process loaded the data while we were waiting.  This minimizes network
+        # traffic when multiple workers start simultaneously.
         if ticker in _data_cache:
             print(f"[CACHE HIT] {ticker} in-memory (after lock).")
             return _data_cache[ticker]
@@ -105,11 +120,11 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
             print(f"[LOCAL CSV] Loading {ticker} from {local_csv_path}")
             header_cols = list(pd.read_csv(local_csv_path, nrows=0).columns)
             if header_cols != EXPECTED_COLUMNS:
+                # A mismatch usually means an old cache file from a previous
+                # version of the project.  Redownload to avoid subtle bugs.
                 print(f"[WARNING] Unexpected columns in {csv_filename}; redownloading.")
                 df = _safe_download(ticker, start_date)
-                df.reset_index()[EXPECTED_COLUMNS].to_csv(
-                    local_csv_path, index=False
-                )
+                df.reset_index()[EXPECTED_COLUMNS].to_csv(local_csv_path, index=False)
             else:
                 df = pd.read_csv(
                     local_csv_path,
@@ -124,30 +139,24 @@ def load_historical_data(ticker: str, start_date="1980-01-01", local_data_dir="d
             print(f"[YAHOO] Downloading {ticker} from {start_date}")
             df = _safe_download(ticker, start_date)
             if not df.empty:
-                df.reset_index()[EXPECTED_COLUMNS].to_csv(
-                    local_csv_path, index=False
-                )
+                df.reset_index()[EXPECTED_COLUMNS].to_csv(local_csv_path, index=False)
         else:
             last_date = df.index[-1]
             new_start_date = (last_date + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
             today_str = datetime.today().strftime("%Y-%m-%d")
             if new_start_date < today_str:
-                print(
-                    f"[UPDATE] Checking for new data for {ticker} from {new_start_date} to {today_str}"
-                )
+                print(f"[UPDATE] Checking for new data for {ticker} from {new_start_date} to {today_str}")
                 new_df = _safe_download(ticker, new_start_date)
                 if not new_df.empty:
+                    # Append new rows, drop duplicates (some feeds backfill) and
+                    # then persist the extended CSV.
                     df = pd.concat([df, new_df])
                     df = df[~df.index.duplicated(keep='last')]
                     df.sort_index(inplace=True)
-                    df.reset_index()[EXPECTED_COLUMNS].to_csv(
-                        local_csv_path, index=False
-                    )
+                    df.reset_index()[EXPECTED_COLUMNS].to_csv(local_csv_path, index=False)
                     print(f"[UPDATE] CSV for {ticker} updated with new data.")
                 else:
-                    print(
-                        f"[UPDATE] No new data available for {ticker} after {last_date.date()}."
-                    )
+                    print(f"[UPDATE] No new data available for {ticker} after {last_date.date()}.")
 
 
     if df is None or df.empty:

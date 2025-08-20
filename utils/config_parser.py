@@ -1,5 +1,13 @@
 # stock_market_simulator/utils/config_parser.py
 
+"""Parse simulator configuration files.
+
+Configuration files define high-level "approaches" consisting of one or more
+tickers and their associated strategies.  This parser keeps the format simple so
+files are easy to edit by hand while still providing enough flexibility for the
+simulator.  The resulting data structure is consumed by :mod:`main` and the GUI.
+"""
+
 import os
 from stock_market_simulator.strategies.base_strategies import STRATEGY_MAP
 
