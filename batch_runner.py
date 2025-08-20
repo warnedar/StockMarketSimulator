@@ -13,14 +13,14 @@ def main():
       2) An output directory name
     so that all results go to 'reports/<output_dir_name>/...'
     """
-    name_postfix = "06232025"
-    name_prefix = "Strategy_Sweep_2"
+    name_postfix = "07032025"
+    name_prefix = "Strategy_QQQ_2"
 
     runs = [
-        # ("config/configA.txt", f"{name_prefix}_5years_{name_postfix}"),
+        ("config/configQQQ.txt", f"{name_prefix}_5years_{name_postfix}"),
         # ("config/configB.txt", f"{name_prefix}_10years_{name_postfix}"),
         # ("config/configC.txt", f"{name_prefix}_15years_{name_postfix}"),
-        ("config/configD.txt", f"{name_prefix}_20years_{name_postfix}")
+        # ("config/configD.txt", f"{name_prefix}_20years_{name_postfix}")
         # Add more configs here if desired
     ]
 

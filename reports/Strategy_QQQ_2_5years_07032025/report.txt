@@ -1,0 +1,31 @@
+=== Approach: S&P500_buyhold ===
+lowest_valley => min:-56.29 (start 2007-10-01), max:-0.03 (start 1983-02-01), avg:-15.97
+highest_peak  => min:-0.00 (start 2000-09-01), max:218.63 (start 1995-01-03), avg:77.36
+final_result  => min:-36.16 (start 2004-03-01), max:218.63 (start 1995-01-03), avg:61.54
+avg_annual_return => min:-8.58% (start 2004-03-01), max:26.08% (start 1995-01-03), avg:9.17%
+
+=== Approach: NASDAQ_buyhold ===
+lowest_valley => min:-76.76 (start 2000-03-01), max:-0.03 (start 1980-05-01), avg:-18.98
+highest_peak  => min:-0.00 (start 2000-09-01), max:518.80 (start 1995-04-03), avg:118.33
+final_result  => min:-56.88 (start 2000-03-01), max:476.74 (start 1995-03-01), avg:80.95
+avg_annual_return => min:-15.48% (start 2000-03-01), max:41.97% (start 1995-03-01), avg:11.09%
+
+=== Approach: NASDAQ_adv_daytrading ===
+lowest_valley => min:-46.91 (start 2007-07-02), max:-0.03 (start 1980-05-01), avg:-11.87
+highest_peak  => min:4.70 (start 2007-07-02), max:463.22 (start 1995-01-03), avg:117.13
+final_result  => min:-29.00 (start 2004-04-01), max:463.22 (start 1995-01-03), avg:95.09
+avg_annual_return => min:-6.62% (start 2004-04-01), max:41.30% (start 1995-01-03), avg:13.19%
+
+=== Approach: QQQ_buyhold ===
+lowest_valley => min:-81.11 (start 2000-03-01), max:-0.03 (start 2009-09-01), avg:-22.56
+highest_peak  => min:-0.00 (start 2000-09-01), max:247.81 (start 2016-12-01), avg:103.97
+final_result  => min:-64.78 (start 2000-04-03), max:244.09 (start 2016-12-01), avg:79.83
+avg_annual_return => min:-18.84% (start 2000-04-03), max:28.04% (start 2016-12-01), avg:10.69%
+
+=== Approach: QQQ_adv_daytrading ===
+lowest_valley => min:-48.13 (start 2000-09-01), max:-0.03 (start 2001-10-01), avg:-12.89
+highest_peak  => min:20.14 (start 2000-09-01), max:233.29 (start 2015-10-01), avg:113.82
+final_result  => min:-6.55 (start 2004-02-02), max:225.19 (start 2016-12-01), avg:100.00
+avg_annual_return => min:-1.35% (start 2004-02-02), max:26.60% (start 2016-12-01), avg:14.33%
+
+Histogram saved to reports\Strategy_QQQ_2_5years_07032025\histogram.png
